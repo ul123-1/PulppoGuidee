@@ -1,0 +1,1717 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>El Estándar — Master Guide Pulppo para asesores inmobiliarios</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- Heldane Text es la fuente oficial de headings. EB Garamond es el fallback documentado (DESIGN.md §2). Para producción, servir Heldane Text Regular vía @font-face. -->
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400&family=Nunito+Sans:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   MASTER GUIDE PULPPO — "El Estándar"
+   Design tokens: DESIGN.md · Reglas de marca v1.0
+   7 colores · 2 tipografías · sin sombras · amarillo ≤ 10%
+   ============================================================ */
+:root{
+  --soft-black:#212322; --white:#FFFFFF; --yellow:#F6BE00;
+  --gray:#B7B7B7; --light-gray:#F3F3F3; --red:#A52003; --sea-green:#529999;
+
+  --font-display:"Heldane Text","EB Garamond",Georgia,serif;
+  --font-body:"Nunito Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+
+  --text-primary:var(--soft-black);
+  --text-on-dark:var(--white);
+  --text-secondary:var(--gray);
+  --surface-default:var(--white);
+  --surface-dark:var(--soft-black);
+  --surface-card:var(--light-gray);
+  --accent:var(--yellow);
+  --divider-neutral:var(--gray);
+  --feedback-success:var(--sea-green);
+  --feedback-error:var(--red);
+  --overlay-dark-70:rgba(33,35,34,.7);
+  --overlay-dark-88:rgba(33,35,34,.88);
+
+  --rail-w:232px;
+}
+*{box-sizing:border-box;box-shadow:none!important;text-shadow:none!important;}
+html{scroll-behavior:smooth;}
+body{margin:0;background:var(--surface-default);color:var(--text-primary);
+  font:400 16px/1.55 var(--font-body);-webkit-font-smoothing:antialiased;}
+
+h1,h2,h3,h4{font-family:var(--font-display);font-weight:400;font-style:normal;
+  line-height:1.15;margin:0;letter-spacing:0;}
+.h-hero{font-size:clamp(44px,7vw,84px);}
+.h1{font-size:clamp(36px,5vw,56px);}
+.h2{font-size:clamp(26px,3.4vw,37px);}
+.h3{font-size:clamp(20px,2.2vw,27px);}
+p{margin:0;}
+a{color:inherit;}
+
+.tag{font:700 12px/1.2 var(--font-body);text-transform:uppercase;letter-spacing:.1em;}
+.tag--accent{display:inline-flex;align-items:center;gap:10px;}
+.tag--accent::before{content:"";width:26px;height:2px;background:var(--accent);}
+.caption{font:300 12px/1.45 var(--font-body);color:var(--text-secondary);}
+.lead{font-size:18px;line-height:1.6;}
+.muted{color:var(--text-secondary);}
+.on-dark{color:var(--text-on-dark);}
+.on-dark .caption,.on-dark.caption{color:var(--gray);}
+
+/* ---------- Fondos fotográficos fijos (parallax por capítulo) ---------- */
+#bg{position:fixed;inset:0;z-index:0;background:var(--surface-dark);}
+#bg .bg-img{position:absolute;inset:0;background-size:cover;background-position:center;
+  opacity:0;transition:opacity .9s ease;}
+#bg .bg-img.active{opacity:1;}
+#bg::after{content:"";position:absolute;inset:0;background:var(--overlay-dark-70);}
+
+/* ---------- Barra de progreso de lectura (acento amarillo) ---------- */
+#scrollbar{position:fixed;top:0;left:0;height:3px;width:0;background:var(--accent);z-index:60;}
+
+/* ---------- Topbar ---------- */
+#topbar{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;align-items:center;
+  justify-content:space-between;padding:16px 28px;color:var(--text-on-dark);
+  transition:background .4s ease,color .4s ease;}
+#topbar.solid{background:var(--white);color:var(--text-primary);border-bottom:1px solid var(--light-gray);}
+.wordmark{font:700 20px/1 var(--font-body);letter-spacing:.01em;text-decoration:none;}
+.wordmark span{color:var(--accent);}
+#chapter-indicator{font:700 11px/1.2 var(--font-body);text-transform:uppercase;letter-spacing:.1em;}
+
+/* ---------- Rail lateral sticky (desktop) ---------- */
+#rail{position:fixed;left:0;top:0;bottom:0;width:var(--rail-w);z-index:40;
+  padding:96px 0 32px 28px;display:flex;flex-direction:column;gap:2px;overflow-y:auto;
+  color:var(--text-on-dark);scrollbar-width:none;}
+#rail::-webkit-scrollbar{display:none;}
+#rail a{display:flex;gap:10px;align-items:baseline;text-decoration:none;padding:5px 0;
+  font:400 13px/1.3 var(--font-body);color:var(--gray);border-left:2px solid transparent;
+  padding-left:10px;margin-left:-12px;transition:color .25s,border-color .25s;}
+#rail a .n{font:700 10px/1 var(--font-body);letter-spacing:.08em;min-width:20px;}
+#rail a.active{color:var(--white);border-left-color:var(--accent);}
+#rail a.done .n{color:var(--sea-green);}
+#rail .rail-progress{margin-top:auto;padding-right:28px;}
+#rail .rail-progress .bar{height:2px;background:rgba(255,255,255,.25);margin-top:8px;}
+#rail .rail-progress .bar i{display:block;height:100%;width:0;background:var(--accent);transition:width .4s;}
+#rail.over-light{color:var(--text-primary);}
+#rail.over-light a{color:var(--gray);}
+#rail.over-light a.active{color:var(--soft-black);}
+#rail.over-light .rail-progress .bar{background:var(--light-gray);}
+
+/* ---------- Layout general ---------- */
+main{position:relative;z-index:1;}
+.shell{margin-left:var(--rail-w);}
+.wrap{max-width:1040px;margin:0 auto;padding:0 48px;}
+
+/* Capítulo hero: transparente, deja ver la foto fija */
+.chapter-hero{min-height:92vh;display:flex;align-items:flex-end;position:relative;
+  padding:140px 0 90px;color:var(--text-on-dark);}
+.chapter-hero .kicker{display:flex;align-items:center;gap:14px;margin-bottom:22px;}
+.chapter-hero .kicker .num{font-family:var(--font-display);font-size:20px;color:var(--accent);}
+.chapter-hero .sub{max-width:560px;margin-top:24px;font-size:17px;line-height:1.6;color:rgba(255,255,255,.85);}
+.chapter-hero .accent-line{width:52px;height:2px;background:var(--accent);margin-top:34px;}
+
+/* Panel de contenido claro (workbook) */
+.panel{background:var(--surface-default);position:relative;}
+.panel .wrap{padding-top:88px;padding-bottom:96px;}
+.panel--card{background:var(--surface-card);}
+.panel--dark{background:var(--surface-dark);color:var(--text-on-dark);}
+
+.section-head{max-width:640px;margin-bottom:52px;}
+.section-head .tag{color:var(--text-secondary);}
+.section-head h2,.section-head h3{margin-top:14px;}
+.section-head p{margin-top:16px;color:var(--text-secondary);}
+.panel--dark .section-head p{color:var(--gray);}
+
+/* Grids y cards — sin sombra, sin borde salvo 1px neutral, radius 0 */
+.grid{display:grid;gap:10px;}
+.g2{grid-template-columns:repeat(2,1fr);}
+.g3{grid-template-columns:repeat(3,1fr);}
+.g4{grid-template-columns:repeat(4,1fr);}
+.card{background:var(--surface-card);padding:26px;}
+.card h4{font-size:19px;margin-bottom:10px;}
+.card p{font-size:14px;line-height:1.55;color:var(--soft-black);}
+.card .caption{display:block;margin-top:12px;}
+.card--line{background:var(--white);border:1px solid var(--light-gray);}
+.card--dark{background:var(--surface-dark);color:var(--white);}
+.card--dark p{color:rgba(255,255,255,.82);}
+
+/* Stat row */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:0;}
+.stat{padding:8px 28px 8px 0;}
+.stat + .stat{border-left:1px solid var(--divider-neutral);padding-left:28px;}
+.stat .n{font-family:var(--font-display);font-size:clamp(38px,4.6vw,58px);line-height:1.1;display:block;}
+.stat .n em{font-style:normal;color:var(--accent);}
+.stat .c{font:300 13px/1.4 var(--font-body);color:var(--text-secondary);display:block;margin-top:6px;}
+
+/* Reveal on scroll */
+.rv{opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease;}
+.rv.in{opacity:1;transform:none;}
+.rv.d1{transition-delay:.08s}.rv.d2{transition-delay:.16s}.rv.d3{transition-delay:.24s}.rv.d4{transition-delay:.32s}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto;}
+  .rv{opacity:1;transform:none;transition:none;}
+  #bg .bg-img{transition:none;}
+}
+
+/* Checklists interactivos */
+.check{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px;}
+.check li{display:flex;gap:14px;align-items:flex-start;background:var(--surface-card);
+  padding:14px 18px;cursor:pointer;font-size:15px;line-height:1.5;user-select:none;}
+.check li .box{flex:0 0 18px;width:18px;height:18px;border:1px solid var(--soft-black);
+  margin-top:2px;display:grid;place-items:center;font-size:12px;color:transparent;background:var(--white);}
+.check li.on .box{background:var(--sea-green);border-color:var(--sea-green);color:var(--white);}
+.check li.on{color:var(--text-secondary);}
+.check-meta{display:flex;justify-content:space-between;align-items:center;margin-top:14px;}
+.check-meta .bar{flex:1;height:2px;background:var(--light-gray);margin-right:16px;}
+.check-meta .bar i{display:block;height:100%;width:0;background:var(--accent);transition:width .3s;}
+.check-meta .caption{white-space:nowrap;}
+
+/* Tabs */
+.tabs{display:flex;gap:2px;flex-wrap:wrap;margin-bottom:2px;}
+.tabs button{font:700 12px/1 var(--font-body);text-transform:uppercase;letter-spacing:.08em;
+  padding:13px 20px;background:var(--surface-card);border:0;cursor:pointer;color:var(--text-secondary);}
+.tabs button.on{background:var(--soft-black);color:var(--white);}
+.tabpanes>div{display:none;}
+.tabpanes>div.on{display:block;}
+
+/* Acordeón */
+.acc{border-top:1px solid var(--light-gray);}
+.acc details{border-bottom:1px solid var(--light-gray);}
+.acc summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;gap:20px;
+  align-items:baseline;padding:20px 4px;font-family:var(--font-display);font-size:20px;}
+.acc summary::-webkit-details-marker{display:none;}
+.acc summary::after{content:"+";font-family:var(--font-body);font-size:18px;color:var(--text-secondary);}
+.acc details[open] summary::after{content:"–";}
+.acc .acc-body{padding:0 4px 24px;max-width:680px;font-size:15px;line-height:1.6;color:var(--soft-black);}
+.acc .acc-body .caption{display:block;margin-top:10px;}
+
+/* Script copiable */
+.script{background:var(--surface-dark);color:var(--white);padding:24px 26px;position:relative;}
+.script .tag{color:var(--gray);display:block;margin-bottom:12px;}
+.script pre{margin:0;white-space:pre-wrap;font:400 14px/1.65 var(--font-body);color:rgba(255,255,255,.92);}
+.copy-btn{position:absolute;top:16px;right:16px;font:700 11px/1 var(--font-body);
+  text-transform:uppercase;letter-spacing:.08em;background:transparent;color:var(--gray);
+  border:1px solid var(--gray);padding:8px 12px;cursor:pointer;transition:color .2s,border-color .2s;}
+.copy-btn:hover{color:var(--white);border-color:var(--white);}
+.copy-btn.ok{color:var(--sea-green);border-color:var(--sea-green);}
+
+/* Comparador dos columnas — verde/rojo con significado funcional */
+.vs{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.vs .col{padding:28px;}
+.vs .col ul{margin:14px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px;font-size:14.5px;line-height:1.5;}
+.vs .col li{padding-left:18px;position:relative;}
+.vs .bad{background:var(--surface-card);}
+.vs .bad .vs-label{color:var(--feedback-error);}
+.vs .bad li::before{content:"✕";position:absolute;left:0;color:var(--feedback-error);font-size:12px;top:3px;}
+.vs .good{background:var(--surface-dark);color:var(--white);}
+.vs .good .vs-label{color:var(--feedback-success);}
+.vs .good li::before{content:"✓";position:absolute;left:0;color:var(--feedback-success);font-size:12px;top:3px;}
+.vs-label{font:700 12px/1 var(--font-body);text-transform:uppercase;letter-spacing:.09em;}
+.vs h4{margin-top:10px;}
+
+/* Funnel */
+.funnel{display:flex;flex-direction:column;gap:6px;}
+.funnel .frow{display:grid;grid-template-columns:150px 1fr 120px;gap:16px;align-items:center;font-size:14px;}
+.funnel .frow .fl{font:700 11px/1.2 var(--font-body);text-transform:uppercase;letter-spacing:.07em;color:var(--text-secondary);}
+.funnel .frow .fb{height:30px;background:var(--light-gray);position:relative;}
+.funnel .frow .fb i{position:absolute;inset:0 auto 0 0;background:var(--accent);transition:width .5s ease;}
+.funnel .frow.win .fb i{background:var(--sea-green);}
+.funnel .frow.leak .fb i{background:var(--feedback-error);}
+.funnel .frow .fv{font-family:var(--font-display);font-size:20px;text-align:right;}
+.funnel .frow .fv small{font:300 11px var(--font-body);color:var(--text-secondary);display:block;}
+
+/* Sliders */
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:2px;background:var(--gray);outline:none;}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;background:var(--soft-black);cursor:pointer;border:0;border-radius:0;}
+input[type=range]::-moz-range-thumb{width:16px;height:16px;background:var(--soft-black);cursor:pointer;border:0;border-radius:0;}
+.slider-row{display:grid;grid-template-columns:190px 1fr 90px;gap:18px;align-items:center;padding:12px 0;border-bottom:1px solid var(--light-gray);}
+.slider-row label{font:700 11px/1.3 var(--font-body);text-transform:uppercase;letter-spacing:.07em;color:var(--text-secondary);}
+.slider-row output{font-family:var(--font-display);font-size:20px;text-align:right;}
+
+/* Timeline / ruta */
+.route{list-style:none;margin:0;padding:0;}
+.route li{display:grid;grid-template-columns:56px 1fr;gap:22px;padding:22px 0;border-bottom:1px solid var(--light-gray);}
+.route .rn{font-family:var(--font-display);font-size:26px;color:var(--accent);}
+.route h4{font-size:19px;margin-bottom:6px;}
+.route p{font-size:14.5px;line-height:1.55;color:var(--soft-black);max-width:640px;}
+.panel--dark .route li{border-color:rgba(255,255,255,.16);}
+.panel--dark .route p{color:rgba(255,255,255,.82);}
+
+/* Semáforo */
+.semaforo{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.semaforo .s{padding:24px;background:var(--surface-card);border-top:3px solid var(--gray);}
+.semaforo .s.verde{border-top-color:var(--sea-green);}
+.semaforo .s.amarillo{border-top-color:var(--accent);}
+.semaforo .s.rojo{border-top-color:var(--feedback-error);}
+.semaforo h4{font-size:18px;}
+.semaforo ul{margin:12px 0 0;padding-left:16px;font-size:13.5px;line-height:1.55;color:var(--soft-black);}
+
+/* Simuladores */
+.sim{background:var(--surface-card);padding:32px;}
+.sim .sim-q{display:flex;flex-direction:column;gap:2px;margin-top:18px;}
+.sim .result{margin-top:26px;padding:22px 26px;background:var(--white);border-left:3px solid var(--gray);}
+.sim .result.verde{border-left-color:var(--sea-green);}
+.sim .result.amarillo{border-left-color:var(--accent);}
+.sim .result.rojo{border-left-color:var(--feedback-error);}
+.sim .result .r-title{font-family:var(--font-display);font-size:22px;}
+.sim .result p{font-size:14px;margin-top:6px;color:var(--soft-black);}
+
+/* Tabla */
+table{width:100%;border-collapse:collapse;font-size:14px;}
+th{font:700 11px/1.3 var(--font-body);text-transform:uppercase;letter-spacing:.07em;
+  color:var(--text-secondary);text-align:left;padding:10px 14px;border-bottom:1px solid var(--soft-black);}
+td{padding:12px 14px;border-bottom:1px solid var(--light-gray);vertical-align:top;}
+tr.hl td{background:var(--surface-card);}
+td .pos{color:var(--sea-green);font-weight:700;}
+td .neg{color:var(--feedback-error);font-weight:700;}
+
+/* Chart SVG */
+.chart-box{background:var(--surface-card);padding:30px;}
+.chart-box svg{width:100%;height:auto;display:block;}
+
+/* Botones */
+.btn{display:inline-block;font:700 12px/1 var(--font-body);text-transform:uppercase;
+  letter-spacing:.09em;padding:15px 26px;border:1px solid var(--soft-black);
+  background:var(--soft-black);color:var(--white);cursor:pointer;text-decoration:none;transition:background .2s,color .2s;}
+.btn:hover{background:var(--white);color:var(--soft-black);}
+.btn--ghost{background:transparent;color:var(--soft-black);}
+.btn--ghost:hover{background:var(--soft-black);color:var(--white);}
+.btn--on-dark{background:var(--white);color:var(--soft-black);border-color:var(--white);}
+.btn--on-dark:hover{background:transparent;color:var(--white);}
+.btn--done{background:var(--sea-green);border-color:var(--sea-green);color:var(--white);}
+
+.module-footer{margin-top:64px;padding-top:32px;border-top:1px solid var(--light-gray);
+  display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;}
+.module-footer .recap{max-width:560px;}
+.module-footer .recap .tag{color:var(--text-secondary);}
+.module-footer .recap p{margin-top:8px;font-size:15px;}
+
+/* Mapa de módulos */
+.map-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.map-grid a{display:block;background:var(--surface-card);padding:24px;text-decoration:none;
+  color:var(--text-primary);transition:background .2s;position:relative;}
+.map-grid a:hover{background:var(--soft-black);color:var(--white);}
+.map-grid a:hover .caption{color:var(--gray);}
+.map-grid .mn{font-family:var(--font-display);font-size:15px;color:var(--accent);display:block;margin-bottom:10px;}
+.map-grid h4{font-size:18px;line-height:1.25;}
+.map-grid .caption{display:block;margin-top:8px;}
+.map-grid .done-mark{position:absolute;top:20px;right:20px;color:var(--sea-green);font-size:14px;display:none;}
+.map-grid a.done .done-mark{display:block;}
+
+/* Journey horizontal */
+.journey{display:grid;grid-template-columns:repeat(6,1fr);gap:2px;}
+.journey .jstep{background:var(--surface-card);padding:18px 14px;}
+.journey .jstep .jn{font-family:var(--font-display);color:var(--accent);font-size:15px;}
+.journey .jstep h5{font:700 12px/1.3 var(--font-body);text-transform:uppercase;letter-spacing:.06em;margin:8px 0 6px;}
+.journey .jstep p{font-size:12.5px;line-height:1.45;color:var(--soft-black);}
+
+/* Biblioteca */
+.lib-filter{display:flex;gap:2px;flex-wrap:wrap;margin-bottom:24px;}
+.lib-filter button{font:700 11px/1 var(--font-body);text-transform:uppercase;letter-spacing:.07em;
+  padding:11px 16px;border:1px solid var(--light-gray);background:var(--white);cursor:pointer;color:var(--text-secondary);}
+.lib-filter button.on{background:var(--soft-black);border-color:var(--soft-black);color:var(--white);}
+.lib-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.lib-grid .res{background:var(--surface-card);padding:22px;display:none;flex-direction:column;gap:8px;}
+.lib-grid .res.show{display:flex;}
+.lib-grid .res .tag{color:var(--text-secondary);font-size:10px;}
+.lib-grid .res h4{font-size:17px;}
+.lib-grid .res p{font-size:13px;color:var(--soft-black);line-height:1.5;flex:1;}
+.lib-grid .res button{align-self:flex-start;margin-top:6px;font:700 11px/1 var(--font-body);
+  text-transform:uppercase;letter-spacing:.07em;background:transparent;border:1px solid var(--soft-black);
+  padding:9px 14px;cursor:pointer;}
+.lib-grid .res button.ok{border-color:var(--sea-green);color:var(--sea-green);}
+
+/* Alert cards */
+.alerts{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
+.alerts .al{background:var(--surface-card);border-left:3px solid var(--feedback-error);padding:20px 22px;font-size:14px;line-height:1.55;}
+.alerts .al b{display:block;font:700 12px/1.4 var(--font-body);text-transform:uppercase;letter-spacing:.06em;color:var(--feedback-error);margin-bottom:6px;}
+
+.note{background:var(--surface-card);border-left:3px solid var(--accent);padding:18px 22px;font-size:13.5px;line-height:1.6;color:var(--soft-black);}
+.note b{font-weight:700;}
+
+.validate{display:inline-block;font:700 10px/1 var(--font-body);letter-spacing:.08em;text-transform:uppercase;
+  color:var(--sea-green);border:1px solid var(--sea-green);padding:5px 8px;margin-left:6px;vertical-align:middle;}
+
+/* Cierre */
+#cierre{min-height:88vh;display:flex;align-items:center;color:var(--white);position:relative;}
+
+/* Espaciadores */
+.mt-1{margin-top:12px}.mt-2{margin-top:24px}.mt-3{margin-top:40px}.mt-4{margin-top:64px}
+.mb-2{margin-bottom:24px}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start;}
+
+/* ---------- Responsive ---------- */
+@media (max-width:1099px){
+  #rail{display:none;}
+  .shell{margin-left:0;}
+}
+@media (max-width:820px){
+  .wrap{padding:0 22px;}
+  .g3,.g4,.map-grid,.lib-grid{grid-template-columns:repeat(2,1fr);}
+  .journey{grid-template-columns:repeat(3,1fr);}
+  .two-col{grid-template-columns:1fr;gap:28px;}
+  .vs{grid-template-columns:1fr;}
+  .funnel .frow{grid-template-columns:96px 1fr 86px;gap:10px;}
+  .slider-row{grid-template-columns:1fr;gap:8px;}
+  .slider-row output{text-align:left;}
+  .semaforo,.alerts{grid-template-columns:1fr;}
+  .chapter-hero{padding:120px 0 70px;min-height:86vh;}
+}
+@media (max-width:540px){
+  .g2,.g3,.g4,.map-grid,.lib-grid{grid-template-columns:1fr;}
+  .journey{grid-template-columns:repeat(2,1fr);}
+  .stats{grid-template-columns:1fr 1fr;}
+  .stat+.stat{border-left:0;padding-left:0;}
+}
+</style>
+</head>
+<body>
+
+<!-- Fondos fotográficos por capítulo (fixed, crossfade). Reemplazar por fotografía oficial Pulppo: urbana, fría, profesional. -->
+<div id="bg" aria-hidden="true">
+  <div class="bg-img active" data-bg="0" style="background-image:url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1800&q=70&auto=format&fit=crop')"></div>
+  <div class="bg-img" data-bg="1" style="background-image:url('https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1800&q=70&auto=format&fit=crop')"></div>
+  <div class="bg-img" data-bg="2" style="background-image:url('https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=1800&q=70&auto=format&fit=crop')"></div>
+  <div class="bg-img" data-bg="3" style="background-image:url('https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1800&q=70&auto=format&fit=crop')"></div>
+  <div class="bg-img" data-bg="4" style="background-image:url('https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=1800&q=70&auto=format&fit=crop')"></div>
+  <div class="bg-img" data-bg="5" style="background-image:url('https://images.unsplash.com/photo-1523966211575-eb4a01e7dd51?w=1800&q=70&auto=format&fit=crop')"></div>
+  <div class="bg-img" data-bg="6" style="background-image:url('https://images.unsplash.com/photo-1556761175-b413da4baf72?w=1800&q=70&auto=format&fit=crop')"></div>
+  <div class="bg-img" data-bg="7" style="background-image:url('https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=1800&q=70&auto=format&fit=crop')"></div>
+  <div class="bg-img" data-bg="8" style="background-image:url('https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=1800&q=70&auto=format&fit=crop')"></div>
+  <div class="bg-img" data-bg="9" style="background-image:url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1800&q=70&auto=format&fit=crop')"></div>
+  <div class="bg-img" data-bg="10" style="background-image:url('https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=1800&q=70&auto=format&fit=crop')"></div>
+</div>
+
+<div id="scrollbar" aria-hidden="true"></div>
+
+<header id="topbar">
+  <!-- Reemplazar por assets/pulppo-wordmark-white.png · símbolo top-right según reglas de marca -->
+  <a class="wordmark" href="#hero">pulppo<span>.</span></a>
+  <div id="chapter-indicator">Master Guide · El Estándar</div>
+</header>
+
+<nav id="rail" aria-label="Módulos">
+  <a href="#hero" data-mod="hero"><span class="n">00</span> Bienvenida</a>
+  <a href="#m1" data-mod="m1"><span class="n">01</span> El nuevo estándar</a>
+  <a href="#m2" data-mod="m2"><span class="n">02</span> Ecosistema Pulppo</a>
+  <a href="#m3" data-mod="m3"><span class="n">03</span> Captación</a>
+  <a href="#m4" data-mod="m4"><span class="n">04</span> Valuación y mercado</a>
+  <a href="#m5" data-mod="m5"><span class="n">05</span> Publicación</a>
+  <a href="#m6" data-mod="m6"><span class="n">06</span> Leads y atención</a>
+  <a href="#m7" data-mod="m7"><span class="n">07</span> Funnel y métricas</a>
+  <a href="#m8" data-mod="m8"><span class="n">08</span> Negociación</a>
+  <a href="#m9" data-mod="m9"><span class="n">09</span> Legal</a>
+  <a href="#m10" data-mod="m10"><span class="n">10</span> SAT y finanzas</a>
+  <a href="#m11" data-mod="m11"><span class="n">11</span> Experiencia del cliente</a>
+  <a href="#m12" data-mod="m12"><span class="n">12</span> Playbooks y recursos</a>
+  <div class="rail-progress">
+    <span class="caption" id="rail-pct">0% completado</span>
+    <div class="bar"><i id="rail-bar"></i></div>
+  </div>
+</nav>
+
+<main>
+<div class="shell">
+
+<!-- ============ 00 · HERO ============ -->
+<section class="chapter-hero" id="hero" data-bg="0" data-mod="hero">
+  <div class="wrap">
+    <div class="rv"><span class="tag on-dark" style="color:var(--gray)">Master Guide · Asesores inmobiliarios Pulppo</span></div>
+    <h1 class="h-hero on-dark rv d1 mt-2">El Estándar.</h1>
+    <p class="sub rv d2">De asesor tradicional a asesor inmobiliario de alto rendimiento. Una guía interactiva con el método completo: captación, valuación, publicación, leads, funnel, negociación, legal y fiscal. Todo en un solo lugar. Todo accionable.</p>
+    <div class="accent-line rv d3"></div>
+    <div class="mt-3 rv d4" style="display:flex;gap:12px;flex-wrap:wrap">
+      <a class="btn btn--on-dark" href="#mapa">Empezar la guía</a>
+      <a class="btn" style="background:transparent;color:#fff;border-color:#fff" href="#m12">Ir a los recursos</a>
+    </div>
+  </div>
+</section>
+
+<!-- Promesa de valor -->
+<section class="panel" data-mod="hero">
+  <div class="wrap">
+    <div class="section-head rv">
+      <span class="tag tag--accent">La promesa</span>
+      <h2 class="h2">El mercado no premia al que más trabaja. Premia al que trabaja con método.</h2>
+      <p>Esta guía convierte la experiencia de cientos de operaciones en un sistema que puedes ejecutar desde hoy. Sin teoría de relleno. Cada módulo termina en una acción práctica.</p>
+    </div>
+    <div class="stats rv d1">
+      <div class="stat"><span class="n">12</span><span class="c">módulos progresivos, del primer contacto al cierre</span></div>
+      <div class="stat"><span class="n">30<em>+</em></span><span class="c">scripts, checklists y plantillas copiables</span></div>
+      <div class="stat"><span class="n">8</span><span class="c">herramientas interactivas: simuladores, funnels y calculadoras</span></div>
+      <div class="stat"><span class="n">1</span><span class="c">método: el estándar Pulppo de trabajo comercial</span></div>
+    </div>
+    <div class="mt-4 rv d2">
+      <div class="grid g3">
+        <div class="card"><span class="tag" style="color:var(--sea-green)">Si estás empezando</span><h4 class="mt-1">Estructura y claridad</h4><p>Sigue los módulos en orden. Cada uno construye sobre el anterior: es tu onboarding comercial completo.</p></div>
+        <div class="card"><span class="tag" style="color:var(--sea-green)">Si ya operas</span><h4 class="mt-1">Mejora tu conversión</h4><p>Ve directo a los módulos 06 y 07. Diagnostica dónde pierdes oportunidades y corrige con los playbooks.</p></div>
+        <div class="card"><span class="tag" style="color:var(--sea-green)">Si buscas escalar</span><h4 class="mt-1">Productividad y volumen</h4><p>Domina captación premium (03), funnel (07) y negociación (08). Ahí está la diferencia entre 2 y 10 cierres al año.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Mapa de módulos -->
+<section class="panel panel--card" id="mapa" data-mod="hero">
+  <div class="wrap">
+    <div class="section-head rv">
+      <span class="tag tag--accent">Mapa de progreso</span>
+      <h2 class="h2">Doce etapas. Una evolución.</h2>
+      <p>Navega libremente o avanza en orden. Al final de cada módulo puedes marcarlo como completado: tu progreso se refleja aquí y en la barra lateral.</p>
+    </div>
+    <div class="map-grid rv d1" id="map-grid">
+      <a href="#m1" data-map="m1"><span class="done-mark">✓ Completado</span><span class="mn">01</span><h4>El nuevo estándar</h4><span class="caption">La transformación del asesor</span></a>
+      <a href="#m2" data-map="m2"><span class="done-mark">✓ Completado</span><span class="mn">02</span><h4>Ecosistema Pulppo</h4><span class="caption">Tu centro operativo</span></a>
+      <a href="#m3" data-map="m3"><span class="done-mark">✓ Completado</span><span class="mn">03</span><h4>Captación</h4><span class="caption">Inventario de calidad</span></a>
+      <a href="#m4" data-map="m4"><span class="done-mark">✓ Completado</span><span class="mn">04</span><h4>Valuación y mercado</h4><span class="caption">Pensar con datos</span></a>
+      <a href="#m5" data-map="m5"><span class="done-mark">✓ Completado</span><span class="mn">05</span><h4>Publicación</h4><span class="caption">Propiedades que convierten</span></a>
+      <a href="#m6" data-map="m6"><span class="done-mark">✓ Completado</span><span class="mn">06</span><h4>Leads y atención</h4><span class="caption">Velocidad y seguimiento</span></a>
+      <a href="#m7" data-map="m7"><span class="done-mark">✓ Completado</span><span class="mn">07</span><h4>Funnel y métricas</h4><span class="caption">Tu tablero comercial</span></a>
+      <a href="#m8" data-map="m8"><span class="done-mark">✓ Completado</span><span class="mn">08</span><h4>Negociación</h4><span class="caption">Entrenamiento práctico</span></a>
+      <a href="#m9" data-map="m9"><span class="done-mark">✓ Completado</span><span class="mn">09</span><h4>Legal inmobiliario</h4><span class="caption">Operaciones seguras</span></a>
+      <a href="#m10" data-map="m10"><span class="done-mark">✓ Completado</span><span class="mn">10</span><h4>SAT y finanzas</h4><span class="caption">Costos e impuestos claros</span></a>
+      <a href="#m11" data-map="m11"><span class="done-mark">✓ Completado</span><span class="mn">11</span><h4>Experiencia del cliente</h4><span class="caption">Servicio premium</span></a>
+      <a href="#m12" data-map="m12"><span class="done-mark">✓ Completado</span><span class="mn">12</span><h4>Playbooks y recursos</h4><span class="caption">Biblioteca lista para usar</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 01 · EL NUEVO ESTÁNDAR ============ -->
+<section class="chapter-hero" id="m1" data-bg="0" data-mod="m1">
+  <div class="wrap">
+    <div class="kicker rv"><span class="num">01</span><span class="tag on-dark" style="color:var(--gray)">Bienvenida</span></div>
+    <h2 class="h1 on-dark rv d1">El nuevo estándar del asesor inmobiliario.</h2>
+    <p class="sub rv d2">Durante décadas, este negocio se ganó con agenda y carisma. Hoy se gana con proceso, datos y experiencia del cliente. Los asesores que adoptan ese estándar cierran más, en menos tiempo y con clientes que los recomiendan.</p>
+    <div class="accent-line rv d3"></div>
+  </div>
+</section>
+
+<section class="panel" data-mod="m1">
+  <div class="wrap">
+    <div class="section-head rv">
+      <span class="tag tag--accent">La transformación</span>
+      <h3 class="h2">Dos formas de trabajar. Solo una escala.</h3>
+    </div>
+    <div class="vs rv d1">
+      <div class="col bad">
+        <span class="vs-label">Asesor tradicional</span>
+        <h4 class="h3 mt-1" style="color:var(--soft-black)">Opera por intuición</h4>
+        <ul>
+          <li>Capta cualquier propiedad, a cualquier precio</li>
+          <li>Responde leads "cuando puede"</li>
+          <li>No mide su funnel: no sabe dónde pierde</li>
+          <li>Publica con fotos de celular y descripciones genéricas</li>
+          <li>Negocia sin preparación ni comparables</li>
+          <li>Depende de la memoria, no de un sistema</li>
+        </ul>
+      </div>
+      <div class="col good">
+        <span class="vs-label">Asesor de alto rendimiento</span>
+        <h4 class="h3 mt-1">Opera con método</h4>
+        <ul>
+          <li>Capta inventario calificado, a precio comercial</li>
+          <li>Responde en minutos, con seguimiento estructurado</li>
+          <li>Revisa métricas cada semana y corrige fugas</li>
+          <li>Publica fichas premium adaptadas a cada canal</li>
+          <li>Negocia con datos, escenarios y scripts</li>
+          <li>Centraliza todo en la plataforma: nada se pierde</li>
+        </ul>
+      </div>
+    </div>
+    <div class="mt-3 rv d2">
+      <div class="note"><b>Cómo navegar esta guía.</b> Avanza con scroll: cada capítulo abre con su contexto y baja al terreno práctico. Los bloques oscuros son scripts copiables. Los checklists son interactivos. Al final de cada módulo hay una acción práctica y un botón para marcarlo completado.</div>
+    </div>
+    <div class="module-footer rv d3">
+      <div class="recap"><span class="tag">Acción práctica</span><p>Antes de seguir, escribe tus números del último trimestre: captaciones, leads atendidos, visitas y cierres. Los vas a necesitar en el módulo 07.</p></div>
+      <button class="btn btn--ghost mark-done" data-done="m1">Marcar módulo completado</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 02 · ECOSISTEMA PULPPO ============ -->
+<section class="chapter-hero" id="m2" data-bg="1" data-mod="m2">
+  <div class="wrap">
+    <div class="kicker rv"><span class="num">02</span><span class="tag on-dark" style="color:var(--gray)">El sistema</span></div>
+    <h2 class="h1 on-dark rv d1">El ecosistema Pulppo: tu centro operativo.</h2>
+    <p class="sub rv d2">Pulppo profesionaliza inmobiliarias con cinco pilares: tecnología, comunidad, consultoría, marketing y legal. Para ti, asesor, eso significa una sola cosa: orden, visibilidad y velocidad en cada etapa de tu operación.</p>
+    <div class="accent-line rv d3"></div>
+  </div>
+</section>
+
+<section class="panel" data-mod="m2">
+  <div class="wrap">
+    <div class="section-head rv">
+      <span class="tag tag--accent">Un solo lugar</span>
+      <h3 class="h2">Piensa en la plataforma como tu oficina central.</h3>
+      <p>Un negocio inmobiliario tiene demasiadas piezas para llevarlas en la cabeza o en un cuaderno: propiedades, propietarios, compradores, visitas, ofertas, documentos. La regla es simple: si no está en el sistema, no existe.</p>
+    </div>
+    <div class="grid g3 rv d1">
+      <div class="card"><h4>Inventario visible</h4><p>Tus captaciones viven en un solo lugar, con su información, fotos, documentos y estatus siempre actualizados.</p></div>
+      <div class="card"><h4>Leads sin fugas</h4><p>Cada contacto queda registrado con su origen y su siguiente paso. Nadie se pierde por un WhatsApp olvidado.</p></div>
+      <div class="card"><h4>Funnel medible</h4><p>Ves tu operación como un embudo: cuántos leads, cuántas visitas, cuántas ofertas, cuántos cierres.</p></div>
+      <div class="card"><h4>Colaboración</h4><p>Compartes inventario y oportunidades con tu inmobiliaria y con la comunidad de asesores.</p></div>
+      <div class="card"><h4>Respaldo experto</h4><p>Consultoría, marketing y soporte legal acompañan tu operación en los momentos críticos.</p></div>
+      <div class="card"><h4>Historial completo</h4><p>Toda la relación con cada cliente queda documentada: contexto instantáneo antes de cada llamada.</p></div>
+    </div>
+    <p class="caption mt-2 rv d2">El detalle de funcionalidades disponibles puede variar. Valida flujos específicos con la documentación oficial de Pulppo o con tu Key Account Manager.<span class="validate">Validar con Pulppo</span></p>
+
+    <div class="section-head mt-4 rv">
+      <span class="tag tag--accent">Rutina operativa</span>
+      <h3 class="h2">El hábito hace al asesor.</h3>
+      <p>Marca lo que ya haces hoy. Lo que quede sin marcar es tu plan de mejora de esta semana.</p>
+    </div>
+    <div class="rv d1">
+      <div class="tabs" data-tabs="rutina">
+        <button class="on" data-tab="0">Diario</button>
+        <button data-tab="1">Semanal</button>
+        <button data-tab="2">Mensual</button>
+      </div>
+      <div class="tabpanes" data-panes="rutina">
+        <div class="on">
+          <ul class="check" data-check="cl-diario">
+            <li><span class="box">✓</span>Responder todos los leads nuevos en menos de 15 minutos</li>
+            <li><span class="box">✓</span>Registrar en la plataforma cada llamada, visita y avance</li>
+            <li><span class="box">✓</span>Confirmar las visitas del día siguiente</li>
+            <li><span class="box">✓</span>Hacer 5 seguimientos a leads activos</li>
+            <li><span class="box">✓</span>Revisar pendientes: documentos, respuestas de propietarios, ofertas abiertas</li>
+          </ul>
+          <div class="check-meta"><div class="bar"><i data-checkbar="cl-diario"></i></div><span class="caption" data-checkpct="cl-diario">0 de 5</span></div>
+        </div>
+        <div>
+          <ul class="check" data-check="cl-semanal">
+            <li><span class="box">✓</span>Revisar métricas del funnel: leads, visitas, ofertas, cierres</li>
+            <li><span class="box">✓</span>Auditar publicaciones: fotos, precio, descripción, vigencia</li>
+            <li><span class="box">✓</span>Contactar a cada propietario con un reporte de avance</li>
+            <li><span class="box">✓</span>Prospectar: 10 conversaciones nuevas de captación</li>
+            <li><span class="box">✓</span>Reactivar 10 leads fríos con un mensaje de valor</li>
+          </ul>
+          <div class="check-meta"><div class="bar"><i data-checkbar="cl-semanal"></i></div><span class="caption" data-checkpct="cl-semanal">0 de 5</span></div>
+        </div>
+        <div>
+          <ul class="check" data-check="cl-mensual">
+            <li><span class="box">✓</span>Analizar tasas de conversión por etapa y compararlas con el mes anterior</li>
+            <li><span class="box">✓</span>Revisar precios de inventario con más de 45 días sin ofertas</li>
+            <li><span class="box">✓</span>Depurar la base: cerrar leads muertos, actualizar estatus</li>
+            <li><span class="box">✓</span>Definir meta de captaciones y cierres del mes siguiente</li>
+            <li><span class="box">✓</span>Elegir una habilidad a entrenar: llamadas, negociación, fotografía</li>
+          </ul>
+          <div class="check-meta"><div class="bar"><i data-checkbar="cl-mensual"></i></div><span class="caption" data-checkpct="cl-mensual">0 de 5</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="module-footer rv">
+      <div class="recap"><span class="tag">Acción práctica</span><p>Agenda hoy tu bloque semanal de métricas: 30 minutos, mismo día, misma hora. Es la reunión más rentable de tu semana.</p></div>
+      <button class="btn btn--ghost mark-done" data-done="m2">Marcar módulo completado</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 03 · CAPTACIÓN ============ -->
+<section class="chapter-hero" id="m3" data-bg="2" data-mod="m3">
+  <div class="wrap">
+    <div class="kicker rv"><span class="num">03</span><span class="tag on-dark" style="color:var(--gray)">Inventario</span></div>
+    <h2 class="h1 on-dark rv d1">Captación: el negocio empieza aquí.</h2>
+    <p class="sub rv d2">Quien controla inventario de calidad controla el mercado. Una captación bien hecha —precio comercial, exclusiva, documentos completos— se vende sola. Una captación débil te cuesta meses de trabajo sin comisión.</p>
+    <div class="accent-line rv d3"></div>
+  </div>
+</section>
+
+<section class="panel" data-mod="m3">
+  <div class="wrap">
+    <div class="section-head rv">
+      <span class="tag tag--accent">Calidad, no cantidad</span>
+      <h3 class="h2">¿Qué es una captación de calidad?</h3>
+      <p>No todas las propiedades valen tu tiempo. Una captación de calidad cumple cuatro condiciones. Si falla más de una, negocia condiciones o déjala pasar.</p>
+    </div>
+    <div class="grid g4 rv d1">
+      <div class="card"><span class="tag" style="color:var(--sea-green)">1 · Precio</span><h4 class="mt-1">A valor de mercado</h4><p>Dentro del ±5% del análisis comparativo. El sobreprecio mata la operación.</p></div>
+      <div class="card"><span class="tag" style="color:var(--sea-green)">2 · Motivación</span><h4 class="mt-1">Propietario que sí vende</h4><p>Tiene una razón real y un plazo: mudanza, herencia, liquidez, cambio de vida.</p></div>
+      <div class="card"><span class="tag" style="color:var(--sea-green)">3 · Documentos</span><h4 class="mt-1">Papeles en regla</h4><p>Escritura, predial y agua al día, sin gravámenes ni conflictos de propiedad.</p></div>
+      <div class="card"><span class="tag" style="color:var(--sea-green)">4 · Condiciones</span><h4 class="mt-1">Exclusiva y acceso</h4><p>Contrato de intermediación firmado, comisión clara y facilidad para mostrar.</p></div>
+    </div>
+
+    <div class="section-head mt-4 rv">
+      <span class="tag tag--accent">Funnel de captación</span>
+      <h3 class="h2">De 40 conversaciones a 3 exclusivas.</h3>
+      <p>La captación también es un embudo. Estos son órdenes de magnitud razonables para un mes de prospección constante:</p>
+    </div>
+    <div class="funnel rv d1">
+      <div class="frow"><span class="fl">Conversaciones</span><div class="fb"><i style="width:100%"></i></div><span class="fv">40</span></div>
+      <div class="frow"><span class="fl">Citas de valuación</span><div class="fb"><i style="width:38%"></i></div><span class="fv">15</span></div>
+      <div class="frow"><span class="fl">Presentaciones</span><div class="fb"><i style="width:20%"></i></div><span class="fv">8</span></div>
+      <div class="frow win"><span class="fl">Exclusivas firmadas</span><div class="fb"><i style="width:8%"></i></div><span class="fv">3</span></div>
+    </div>
+    <p class="caption mt-2 rv">Fuentes de prospección: tu base de contactos, referidos de operaciones pasadas, propietarios que venden por su cuenta, publicaciones vencidas de otros portales, comercios y administradores de la zona donde quieres dominar.</p>
+
+    <div class="section-head mt-4 rv">
+      <span class="tag tag--accent">Argumentos y objeciones</span>
+      <h3 class="h2">El propietario no compra "publicar su casa". Compra resultado.</h3>
+      <p>Tu propuesta de valor: método de precio con datos, difusión profesional multicanal, filtrado de compradores reales, acompañamiento legal y reporte de avances. Estas son las objeciones que vas a escuchar — y cómo responderlas:</p>
+    </div>
+    <div class="acc rv d1">
+      <details><summary>"Otra inmobiliaria me cobra menos comisión"</summary><div class="acc-body">"Entiendo. La pregunta no es cuánto cuesta la comisión, sino cuánto te deja la venta. Un asesor que invierte en fotografía, difusión y negociación suele defender mejor el precio final. ¿Te muestro con números cómo trabajo una propiedad como la tuya?"<span class="caption">Nunca compitas bajando comisión primero: compite subiendo valor.</span></div></details>
+      <details><summary>"Quiero venderla yo mismo"</summary><div class="acc-body">"Es válido, muchos lo intentan. ¿Te puedo dejar tres datos? El comprador que llega solo regatea más porque sabe que no hay filtro; calificar compradores toma horas por semana; y el riesgo legal de un mal contrato es tuyo. Si en 60 días no la has vendido, ¿me das la oportunidad de mostrarte mi plan?"</div></details>
+      <details><summary>"Mi precio no es negociable"</summary><div class="acc-body">"Respeto tu número. Mi trabajo es mostrarte lo que dicen los datos: en tu zona se han vendido propiedades similares en este rango, y las que salen 10% arriba tardan el doble o no se venden. Podemos salir a tu precio con un plan de revisión a 30 días. ¿Te parece?"</div></details>
+      <details><summary>"Ya la tengo con otras tres agencias"</summary><div class="acc-body">"Justo por eso no se ha vendido: cuando todos la tienen, nadie la trabaja. Nadie invierte en una propiedad que le pueden ganar mañana. En exclusiva, yo respondo por resultados con reportes cada semana. ¿Comparamos qué ha hecho cada agencia por tu casa este mes?"</div></details>
+      <details><summary>"No quiero firmar exclusiva"</summary><div class="acc-body">"La exclusiva no te ata a mí: me ata a mí contigo. Me obliga a invertir en tu propiedad y a reportarte avances. Firmémosla por 90 días con salida anticipada si no cumplo el plan de trabajo. Tú no arriesgas nada; yo arriesgo mi inversión."</div></details>
+    </div>
+
+    <div class="section-head mt-4 rv">
+      <span class="tag tag--accent">Scripts de prospección</span>
+      <h3 class="h2">Palabras que abren puertas.</h3>
+      <p>Adáptalos a tu tono. Lo importante es la estructura: contexto, valor, pregunta.</p>
+    </div>
+    <div class="grid g2 rv d1" style="gap:10px">
+      <div class="script"><button class="copy-btn">Copiar</button><span class="tag">WhatsApp · Propietario que vende solo</span><pre>Hola [nombre], vi tu propiedad publicada en [portal]. Soy [tu nombre], asesor inmobiliario en [zona]. Trabajo con compradores buscando exactamente ese tipo de propiedad.
+
+Sin compromiso: ¿te comparto un análisis de mercado gratuito para que valides tu precio de salida? Te sirve aunque decidas vender por tu cuenta.</pre></div>
+      <div class="script"><button class="copy-btn">Copiar</button><span class="tag">Llamada · Primer contacto</span><pre>1. Apertura: "Hola [nombre], soy [tu nombre] de [inmobiliaria]. ¿Tienes 2 minutos?"
+2. Contexto: "Trabajo la zona de [colonia] y tengo compradores activos buscando [tipo]."
+3. Valor: "Preparo un análisis comparativo sin costo: precio real de mercado y plan de venta."
+4. Cierre: "¿Te va mejor que pase el jueves o el sábado a conocer la propiedad?"</pre></div>
+      <div class="script"><button class="copy-btn">Copiar</button><span class="tag">Reunión de captación · Estructura</span><pre>1. Escucha (10 min): motivo de venta, plazo, expectativa de precio.
+2. Recorrido (15 min): toma notas visibles, pregunta por mejoras y pendientes.
+3. Método (10 min): presenta tu análisis comparativo y plan de difusión.
+4. Condiciones (10 min): precio de salida, exclusiva, comisión, plan de reportes.
+5. Cierre: "Si te hace sentido, firmamos hoy y esta semana inicio fotos y publicación."</pre></div>
+      <div class="script"><button class="copy-btn">Copiar</button><span class="tag">WhatsApp · Pedir documentos</span><pre>[Nombre], ¡excelente decisión! Para publicar con todo en regla necesito:
+
+1. Escritura (carátula y datos de inscripción)
+2. Identificación oficial del o los propietarios
+3. Predial y agua al corriente (último pago)
+4. CLG o datos para tramitarlo
+
+¿Me los mandas por aquí en foto legible? Con eso arranco hoy mismo.</pre></div>
+    </div>
+
+    <div class="section-head mt-4 rv">
+      <span class="tag tag--accent">Comparador</span>
+      <h3 class="h2">Captación débil vs captación premium.</h3>
+    </div>
+    <div class="vs rv d1">
+      <div class="col bad">
+        <span class="vs-label">Captación débil</span>
+        <ul>
+          <li>Precio impuesto por el propietario, 15% arriba de mercado</li>
+          <li>Abierta, compartida con 4 agencias</li>
+          <li>Sin escritura a la vista, "luego te la paso"</li>
+          <li>Propietario sin plazo ni motivo claro</li>
+          <li>Acceso complicado: solo domingos, con aviso de 3 días</li>
+        </ul>
+      </div>
+      <div class="col good">
+        <span class="vs-label">Captación premium</span>
+        <ul>
+          <li>Precio de salida validado con comparables (±5%)</li>
+          <li>Exclusiva 90 días con plan de trabajo por escrito</li>
+          <li>Expediente documental completo desde el día uno</li>
+          <li>Motivación y fecha objetivo definidas</li>
+          <li>Acceso ágil y propiedad lista para mostrarse</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section-head mt-4 rv">
+      <span class="tag tag--accent">Simulador</span>
+      <h3 class="h2">¿Vale la pena esta captación?</h3>
+      <p>Marca lo que aplica a la propiedad que estás evaluando. El semáforo te da el veredicto.</p>
+    </div>
+    <div class="sim rv d1" id="sim-captacion">
+      <ul class="check sim-q" data-sim="cap">
+        <li data-pts="3"><span class="box">✓</span>El precio deseado está dentro del ±5% de mis comparables</li>
+        <li data-pts="3"><span class="box">✓</span>El propietario tiene motivo y plazo reales para vender</li>
+        <li data-pts="2"><span class="box">✓</span>Acepta exclusiva con plan de trabajo</li>
+        <li data-pts="2"><span class="box">✓</span>La documentación está completa o es fácil de completar</li>
+        <li data-pts="1"><span class="box">✓</span>La propiedad se puede mostrar con facilidad</li>
+        <li data-pts="1"><span class="box">✓</span>La zona tiene demanda activa comprobable</li>
+      </ul>
+      <div class="result" id="sim-cap-result"><span class="r-title">Marca los criterios</span><p>El puntaje pondera lo que más impacta: precio y motivación pesan más que el resto.</p></div>
+    </div>
+
+    <div class="mt-3 rv">
+      <div class="alerts">
+        <div class="al"><b>Señal de alerta</b>"Véndela en lo que yo digo o nada." Propietario sin flexibilidad ni urgencia = meses de desgaste.</div>
+        <div class="al"><b>Señal de alerta</b>Herencia sin sucesión terminada, divorcio en curso o copropietarios que no están de acuerdo.</div>
+        <div class="al"><b>Señal de alerta</b>No muestra la escritura "por desconfianza". Sin papeles a la vista no hay publicación.</div>
+        <div class="al"><b>Señal de alerta</b>Ya pasó por 5 asesores en un año. Pregunta qué pasó antes de invertir tu tiempo.</div>
+      </div>
+    </div>
+    <div class="module-footer rv">
+      <div class="recap"><span class="tag">Acción práctica</span><p>Esta semana: 10 conversaciones de prospección con el script de WhatsApp. Registra cada una y agenda al menos 3 citas de valuación.</p></div>
+      <button class="btn btn--ghost mark-done" data-done="m3">Marcar módulo completado</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 04 · VALUACIÓN ============ -->
+<section class="chapter-hero" id="m4" data-bg="3" data-mod="m4">
+  <div class="wrap">
+    <div class="kicker rv"><span class="num">04</span><span class="tag on-dark" style="color:var(--gray)">Datos</span></div>
+    <h2 class="h1 on-dark rv d1">Valuación: piensa con datos, no con deseos.</h2>
+    <p class="sub rv d2">El precio no lo decide el propietario, ni tú. Lo decide el mercado. Tu trabajo es leerlo con método y traducirlo en una opinión de valor que el propietario pueda entender y aceptar.</p>
+    <div class="accent-line rv d3"></div>
+  </div>
+</section>
+
+<section class="panel" data-mod="m4">
+  <div class="wrap">
+    <div class="section-head rv">
+      <span class="tag tag--accent">Tres precios</span>
+      <h3 class="h2">Deseado, comercial y de cierre.</h3>
+    </div>
+    <div class="grid g3 rv d1">
+      <div class="card"><span class="tag" style="color:var(--feedback-error)">Precio deseado</span><h4 class="mt-1">Lo que el propietario quiere</h4><p>Mezcla de recuerdo de compra, remodelaciones y necesidad. Casi siempre está arriba del mercado. Es tu punto de partida de la conversación, no del plan de venta.</p></div>
+      <div class="card"><span class="tag">Precio comercial</span><h4 class="mt-1">Lo que dicen los datos</h4><p>Resultado del análisis comparativo de mercado (ACM). Es el precio de salida que genera visitas en los primeros 30 días.</p></div>
+      <div class="card"><span class="tag" style="color:var(--sea-green)">Precio de cierre</span><h4 class="mt-1">Lo que firma el comprador</h4><p>En un mercado sano, cierra entre 3% y 7% debajo del precio comercial tras negociación. Prepara al propietario para ese rango desde el día uno.</p></div>
+    </div>
+
+    <div class="section-head mt-4 rv">
+      <span class="tag tag--accent">Método ACM</span>
+      <h3 class="h2">Análisis comparativo en cinco pasos.</h3>
+    </div>
+    <ol class="route rv d1">
+      <li><span class="rn">01</span><div><h4>Define el sujeto</h4><p>Tipo, m² de construcción y terreno, recámaras, baños, estacionamientos, antigüedad, estado de conservación, nivel/piso y amenidades.</p></div></li>
+      <li><span class="rn">02</span><div><h4>Reúne 6–10 comparables</h4><p>Misma zona y tipología, con máximo ±20% de diferencia en superficie. Mezcla: propiedades vendidas (las más valiosas), en oferta activa (tu competencia) y retiradas (lo que el mercado rechazó).</p></div></li>
+      <li><span class="rn">03</span><div><h4>Homologa</h4><p>Ajusta el precio por m² de cada comparable según diferencias: estado, piso, vista, estacionamientos, amenidades. Ajustes típicos de ±3% a ±10% por factor.</p></div></li>
+      <li><span class="rn">04</span><div><h4>Lee la demanda</h4><p>¿Cuántos días tardan en venderse los comparables (absorción)? ¿Cuánta competencia activa hay hoy? Mucha oferta + venta lenta = precio conservador.</p></div></li>
+      <li><span class="rn">05</span><div><h4>Concluye un rango</h4><p>Presenta un rango, no un número: "Tu propiedad está entre $4.05M y $4.25M. Te recomiendo salir en $4.19M." El rango baja la resistencia del propietario.</p></div></li>
+    </ol>
+
+    <div class="two-col mt-4">
+      <div class="rv">
+        <span class="tag tag--accent">Ejemplo</span>
+        <h3 class="h3 mt-1 mb-2">Tabla de comparables homologados</h3>
+        <table>
+          <thead><tr><th>Comparable</th><th>m²</th><th>Precio</th><th>$/m² ajust.</th></tr></thead>
+          <tbody>
+            <tr><td>Depto A · vendido</td><td>92</td><td>$3.90M</td><td>$42,400</td></tr>
+            <tr><td>Depto B · vendido</td><td>105</td><td>$4.55M</td><td>$43,300</td></tr>
+            <tr><td>Depto C · activo 120 días</td><td>98</td><td>$4.90M</td><td><span class="neg">$50,000</span></td></tr>
+            <tr><td>Depto D · activo 22 días</td><td>95</td><td>$4.15M</td><td>$43,700</td></tr>
+            <tr class="hl"><td><b>Sujeto (98 m²)</b></td><td>98</td><td><b>$4.19M sugerido</b></td><td><span class="pos">$42,800</span></td></tr>
+          </tbody>
+        </table>
+        <p class="caption mt-1">El comparable C lleva 120 días sin venderse: no es una referencia de valor, es una advertencia de sobreprecio.</p>
+      </div>
+      <div class="rv d1">
+        <span class="tag tag--accent">Variables que mueven el precio</span>
+        <h3 class="h3 mt-1 mb-2">¿Qué pesa más?</h3>
+        <div class="funnel">
+          <div class="frow"><span class="fl">Ubicación</span><div class="fb"><i style="width:100%"></i></div><span class="fv">Alta</span></div>
+          <div class="frow"><span class="fl">Superficie</span><div class="fb"><i style="width:85%"></i></div><span class="fv">Alta</span></div>
+          <div class="frow"><span class="fl">Estado</span><div class="fb"><i style="width:65%"></i></div><span class="fv">Media</span></div>
+          <div class="frow"><span class="fl">Estacionamiento</span><div class="fb"><i style="width:50%"></i></div><span class="fv">Media</span></div>
+          <div class="frow"><span class="fl">Amenidades</span><div class="fb"><i style="width:35%"></i></div><span class="fv">Media</span></div>
+          <div class="frow"><span class="fl">Piso / vista</span><div class="fb"><i style="width:28%"></i></div><span class="fv">Baja</span></div>
+        </div>
+        <p class="caption mt-2">La ubicación no se negocia ni se remodela: por eso pesa más. Las remodelaciones recuperan solo una parte de su costo en el precio.</p>
+      </div>
+    </div>
+
+    <div class="section-head mt-4 rv">
+      <span class="tag tag--accent">Herramienta interactiva</span>
+      <h3 class="h2">El costo real del sobreprecio.</h3>
+      <p>Mueve el slider y observa qué pasa con los días en mercado y las visitas cuando el precio de salida se aleja del valor comercial.</p>
+    </div>
+    <div class="chart-box rv d1">
+      <div class="slider-row" style="border-bottom:1px solid var(--gray)">
+        <label for="sob">Sobreprecio de salida</label>
+        <input type="range" id="sob" min="0" max="25" value="0" step="5">
+        <output id="sob-out">0%</output>
+      </div>
+      <div class="mt-2" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
+        <div class="stat"><span class="n" id="sob-dias">35</span><span class="c">días en mercado estimados</span></div>
+        <div class="stat" style="border-left:1px solid var(--gray);padding-left:24px"><span class="n" id="sob-visitas">100%</span><span class="c">visitas vs precio comercial</span></div>
+        <div class="stat" style="border-left:1px solid var(--gray);padding-left:24px"><span class="n" id="sob-cierre">−4%</span><span class="c">descuento típico al cierre</span></div>
+      </div>
+      <p class="mt-2" id="sob-msg" style="font-size:14px;border-left:3px solid var(--sea-green);padding-left:14px">Precio comercial: máxima exposición en los primeros 30 días, cuando la propiedad es novedad.</p>
+      <p class="caption mt-2">Valores ilustrativos con fines didácticos. Cada zona tiene su propia absorción: usa tus datos reales.</p>
+    </div>
+
+    <div class="section-head mt-4 rv">
+      <span class="tag tag--accent">Presentar la opinión de valor</span>
+      <h3 class="h2">Cómo decirle al propietario que su precio no es el del mercado.</h3>
+    </div>
+    <div class="script rv d1"><button class="copy-btn">Copiar</button><span class="tag">Guion · Presentación de opinión de valor</span><pre>1. Empatía: "Entiendo perfectamente por qué valoras tu casa en $4.8M: la compraste bien y la has cuidado."
+2. Datos: "Te muestro las 8 propiedades comparables. Las que se vendieron cerraron entre $42 y $44 mil por m². Las que salieron arriba de $48 mil llevan más de 4 meses publicadas."
+3. Traducción: "Con tus 98 m², el mercado hoy paga entre $4.05M y $4.25M."
+4. Consecuencia: "Si salimos en $4.8M, ayudamos a vender las casas de la competencia: los compradores comparan."
+5. Plan: "Mi recomendación: salir en $4.19M, evaluar visitas y ofertas a 30 días, y ajustar juntos con datos. ¿Avanzamos así?"</pre></div>
+
+    <div class="module-footer rv">
+      <div class="recap"><span class="tag">Acción práctica</span><p>Haz el ACM de una propiedad de tu inventario actual con la plantilla del módulo 12. Si el sobreprecio supera 8%, agenda la conversación de ajuste esta semana.</p></div>
+      <button class="btn btn--ghost mark-done" data-done="m4">Marcar módulo completado</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 05 · PUBLICACIÓN ============ -->
+<section class="chapter-hero" id="m5" data-bg="4" data-mod="m5">
+  <div class="wrap">
+    <div class="kicker rv"><span class="num">05</span><span class="tag on-dark" style="color:var(--gray)">Difusión</span></div>
+    <h2 class="h1 on-dark rv d1">Publicación: la propiedad entra por los ojos.</h2>
+    <p class="sub rv d2">El comprador decide en segundos si tu publicación merece un clic. Fotos profesionales, título claro y descripción que vende estilo de vida: esa es la diferencia entre 3 y 30 leads por semana.</p>
+    <div class="accent-line rv d3"></div>
+  </div>
+</section>
+
+<section class="panel" data-mod="m5">
+  <div class="wrap">
+    <div class="section-head rv">
+      <span class="tag tag--accent">Preparación previa</span>
+      <h3 class="h2">Antes de la cámara, la casa.</h3>
+      <p>Pide al propietario: despersonalizar (fotos familiares, imanes, objetos religiosos), despejar superficies, luz encendida en todos los espacios, camas hechas, baños impecables y cortinas abiertas. Una casa preparada vale más en foto y en visita.</p>
+    </div>
+    <div class="grid g4 rv d1">
+      <div class="card"><h4>Fachada</h4><p>Con cielo despejado, sin coches tapando. Es tu foto de portada en el 80% de los casos.</p></div>
+      <div class="card"><h4>Sala–comedor</h4><p>Desde dos ángulos, mostrando amplitud y entrada de luz natural.</p></div>
+      <div class="card"><h4>Cocina y baños</h4><p>Superficies vacías y limpias. Son las fotos que más escrutinio reciben.</p></div>
+      <div class="card"><h4>Recámaras + extras</h4><p>Todas las recámaras, más vista, terraza, amenidades y estacionamiento.</p></div>
+    </div>
+    <p class="caption mt-2 rv">Reglas de oro: horizontal siempre, altura de pecho, esquinas para dar profundidad, luz natural, sin gran angular extremo que distorsione. Mínimo 12 fotos, ideal 20–25.</p>
+
+    <div class="section-head mt-4 rv">
+      <span class="tag tag--accent">Copy que convierte</span>
+      <h3 class="h2">Título y descripción: vende el beneficio, no el inventario.</h3>
+    </div>
+    <div class="vs rv d1">
+      <div class="col bad">
+        <span class="vs-label">Publicación débil</span>
+        <h4 class="h3 mt-1" style="color:var(--soft-black)">"Se vende departamento"</h4>
+        <ul>
+          <li>"Bonito depto en buena zona, 3 recámaras, trato directo"</li>
+          <li>7 fotos verticales, oscuras, con la cama destendida</li>
+          <li>Sin precio ("Inf. por inbox")</li>
+          <li>Sin m², sin mantenimiento, sin estacionamientos</li>
+          <li>Publicado una vez y abandonado</li>
+        </ul>
+      </div>
+      <div class="col good">
+        <span class="vs-label">Publicación premium</span>
+        <h4 class="h3 mt-1">"Depto 98 m² con terraza en Del Valle · 2 estacionamientos"</h4>
+        <ul>
+          <li>Apertura con el diferenciador: "Despierta con vista arbolada…"</li>
+          <li>22 fotos horizontales profesionales + recorrido en video</li>
+          <li>Precio visible, mantenimiento y m² claros</li>
+          <li>Datos de decisión: piso, orientación, edad, amenidades, pet friendly</li>
+          <li>Cierre con llamado a la acción: "Agenda tu visita hoy"</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="grid g2 mt-3 rv d1" style="gap:10px">
+      <div class="script"><button class="copy-btn">Copiar</button><span class="tag">Fórmula de título</span><pre>[Tipo] + [m² o # recámaras] + [diferenciador] + [ubicación]
+
+Ejemplos:
+· Depto 98 m² con terraza privada en Del Valle
+· Casa 3 recámaras remodelada a 5 min del Tec
+· PH con roof garden y vista panorámica · Polanco</pre></div>
+      <div class="script"><button class="copy-btn">Copiar</button><span class="tag">Estructura de descripción</span><pre>1. Gancho (1 línea): el estilo de vida que ofrece.
+2. Distribución: recámaras, baños, cocina, espacios.
+3. Números: m² construcción/terreno, piso, estacionamientos, mantenimiento.
+4. Entorno: colegios, parques, transporte, comercio a distancia caminable.
+5. Condiciones: precio, disponibilidad, pet friendly, crédito aceptado.
+6. CTA: "Agenda tu visita esta semana: [contacto]".</pre></div>
+    </div>
+
+    <div class="section-head mt-4 rv">
+      <span class="tag tag--accent">Multicanal</span>
+      <h3 class="h2">Una propiedad, seis formatos.</h3>
+      <p>No copies y pegues: cada canal tiene su propio lenguaje.</p>
+    </div>
+    <div class="rv d1">
+      <div class="tabs" data-tabs="canales">
+        <button class="on" data-tab="0">Portales</button>
+        <button data-tab="1">Instagram</button>
+        <button data-tab="2">Facebook</button>
+        <button data-tab="3">TikTok</button>
+        <button data-tab="4">LinkedIn</button>
+        <button data-tab="5">WhatsApp</button>
+      </div>
+      <div class="tabpanes" data-panes="canales">
+        <div class="on"><div class="card card--line"><h4>Portales inmobiliarios</h4><p>Información completa y exacta: el comprador filtra por datos. Título con keywords de búsqueda (zona, tipo, recámaras), las 25 fotos, precio real. Renueva o actualiza la publicación cada semana para mantener relevancia.</p></div></div>
+        <div><div class="card card--line"><h4>Instagram</h4><p>Reel de 15–30 s con los 3 mejores espacios y texto sobre video ("98 m² en Del Valle · $4.19M"). Carrusel de 5–8 fotos para feed. Historias con sticker de pregunta o encuesta. Precio y zona siempre visibles: el misterio genera scroll, no leads.</p></div></div>
+        <div><div class="card card--line"><h4>Facebook</h4><p>Descripción completa (aquí sí se lee), álbum de fotos y publicación en grupos de compra/venta de la zona. Marketplace funciona para rangos medios. Responde comentarios en minutos: son leads públicos.</p></div></div>
+        <div><div class="card card--line"><h4>TikTok</h4><p>Recorrido continuo con gancho en el primer segundo: "Esto cuesta $4.19M en Del Valle". Habla a cámara, muestra el detalle inesperado (la terraza, el clóset, la vista). Funciona para awareness y captación de propietarios, no solo compradores.</p></div></div>
+        <div><div class="card card--line"><h4>LinkedIn</h4><p>Enfoque de inversión y reubicación por trabajo: plusvalía de la zona, rentabilidad estimada, cercanía a corporativos. Tu red profesional es fuente de referidos: publica también tus operaciones cerradas.</p></div></div>
+        <div><div class="card card--line"><h4>WhatsApp</h4><p>Ficha resumida: 1 foto ganadora + 5 datos clave + precio + link a la publicación completa. Estados de WhatsApp para tu base de contactos. Nunca mandes 25 fotos sueltas: manda la ficha.</p></div></div>
+      </div>
+    </div>
+
+    <div class="section-head mt-4 rv">
+      <span class="tag tag--accent">Checklist de publicación</span>
+      <h3 class="h2">Antes de dar clic en "publicar".</h3>
+    </div>
+    <div class="rv d1">
+      <ul class="check" data-check="cl-pub">
+        <li><span class="box">✓</span>Mínimo 12 fotos horizontales, luminosas y en orden lógico (fachada → sociales → privados)</li>
+        <li><span class="box">✓</span>Título con tipo, tamaño, diferenciador y zona</li>
+        <li><span class="box">✓</span>Descripción completa con la estructura de 6 bloques</li>
+        <li><span class="box">✓</span>Precio, mantenimiento y m² verificados con el propietario</li>
+        <li><span class="box">✓</span>Datos duros completos: recámaras, baños, estacionamientos, antigüedad, piso</li>
+        <li><span class="box">✓</span>Video o recorrido disponible</li>
+        <li><span class="box">✓</span>Publicada en plataforma, portales y al menos 2 redes</li>
+        <li><span class="box">✓</span>Ficha de WhatsApp lista para compartir</li>
+      </ul>
+      <div class="check-meta"><div class="bar"><i data-checkbar="cl-pub"></i></div><span class="caption" data-checkpct="cl-pub">0 de 8</span></div>
+    </div>
+    <div class="mt-2 rv"><p class="caption">Errores que matan conversión: fotos verticales u oscuras, "precio por inbox", descripciones de 2 líneas, datos inconsistentes entre portales, publicaciones vencidas con "VENDIDO" sin actualizar.</p></div>
+
+    <div class="module-footer rv">
+      <div class="recap"><span class="tag">Acción práctica</span><p>Audita hoy tu publicación con menos leads: pásala por el checklist y corrige lo que falle. Mide leads antes y después de 7 días.</p></div>
+      <button class="btn btn--ghost mark-done" data-done="m5">Marcar módulo completado</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 06 · LEADS ============ -->
+<section class="chapter-hero" id="m6" data-bg="5" data-mod="m6">
+  <div class="wrap">
+    <div class="kicker rv"><span class="num">06</span><span class="tag on-dark" style="color:var(--gray)">Atención</span></div>
+    <h2 class="h1 on-dark rv d1">Leads: la velocidad es la mitad de la venta.</h2>
+    <p class="sub rv d2">Un lead que espera horas ya está hablando con otro asesor. Responder en menos de 15 minutos multiplica tu probabilidad de contacto efectivo. Después de la velocidad, todo es calificación y seguimiento.</p>
+    <div class="accent-line rv d3"></div>
+  </div>
+</section>
+
+<section class="panel" data-mod="m6">
+  <div class="wrap">
+    <div class="stats rv">
+      <div class="stat"><span class="n">&lt;15<em> min</em></span><span class="c">tiempo objetivo de primera respuesta</span></div>
+      <div class="stat"><span class="n">5–7</span><span class="c">toques de seguimiento antes de descartar un lead</span></div>
+      <div class="stat"><span class="n">100<em>%</em></span><span class="c">de interacciones registradas en la plataforma</span></div>
+    </div>
+
+    <div class="section-head mt-4 rv">
+      <span class="tag tag--accent">Journey del lead</span>
+      <h3 class="h2">Del "hola, informes" a la visita agendada.</h3>
+    </div>
+    <div class="journey rv d1">
+      <div class="jstep"><span class="jn">1</span><h5>Llega</h5><p>Portal, redes o referido. Registra el origen siempre.</p></div>
+      <div class="jstep"><span class="jn">2</span><h5>Respuesta</h5><p>&lt;15 min. Saluda, confirma disponibilidad, haz una pregunta.</p></div>
+      <div class="jstep"><span class="jn">3</span><h5>Calificación</h5><p>Presupuesto, forma de pago, plazo, motivo, decisor.</p></div>
+      <div class="jstep"><span class="jn">4</span><h5>Visita</h5><p>Propón dos horarios concretos. Confirma un día antes.</p></div>
+      <div class="jstep"><span class="jn">5</span><h5>Seguimiento</h5><p>Mismo día de la visita: feedback y siguiente paso.</p></div>
+      <div class="jstep"><span class="jn">6</span><h5>Oferta</h5><p>Formaliza por escrito y pasa al módulo de negociación.</p></div>
+    </div>
+
+    <div class="section-head mt-4 rv">
+      <span class="tag tag--accent">Calificación</span>
+      <h3 class="h2">Cinco preguntas separan curiosos de compradores.</h3>
+      <p>Presupuesto · forma de pago (contado, crédito, preaprobado) · plazo de decisión · motivo de compra · quién decide. Para vendedores: motivo, plazo, expectativa de precio, situación documental y flexibilidad. Con esas respuestas, clasifica:</p>
+    </div>
+    <div class="semaforo rv d1">
+      <div class="s verde"><span class="tag" style="color:var(--sea-green)">Lead caliente</span><h4 class="mt-1">Prioridad hoy</h4><ul><li>Presupuesto alineado y crédito preaprobado o contado</li><li>Plazo ≤ 3 meses</li><li>Motivo concreto y decisor identificado</li><li>Pide visita o hace preguntas específicas</li></ul></div>
+      <div class="s amarillo"><span class="tag">Lead tibio</span><h4 class="mt-1">Cultivar</h4><ul><li>Interés real pero plazo 3–9 meses o crédito en trámite</li><li>Presupuesto 10–15% por debajo</li><li>Necesita vender antes de comprar</li><li>Seguimiento quincenal con valor: nuevas opciones, cambios de precio</li></ul></div>
+      <div class="s rojo"><span class="tag" style="color:var(--feedback-error)">Lead frío</span><h4 class="mt-1">Automatizar o cerrar</h4><ul><li>No responde tras 5–7 toques en 3 semanas</li><li>Presupuesto inviable (&gt;25% abajo)</li><li>"Solo estoy viendo" sin plazo ni motivo</li><li>Pasa a campaña de reactivación mensual y libera tu agenda</li></ul></div>
+    </div>
+
+    <div class="section-head mt-4 rv">
+      <span class="tag tag--accent">Scripts de atención</span>
+      <h3 class="h2">Responde rápido, pregunta mejor.</h3>
+    </div>
+    <div class="grid g2 rv d1" style="gap:10px">
+      <div class="script"><button class="copy-btn">Copiar</button><span class="tag">WhatsApp · Primera respuesta (&lt;15 min)</span><pre>¡Hola [nombre]! Gracias por tu interés en [propiedad]. Sí está disponible. 
+
+Para recomendarte mejor: ¿la buscas para vivir o como inversión, y en qué rango de presupuesto te estás moviendo?
+
+Tengo espacios para mostrártela [día] a las [hora] o [día] a las [hora]. ¿Cuál te acomoda?</pre></div>
+      <div class="script"><button class="copy-btn">Copiar</button><span class="tag">Llamada · Calificación en 3 minutos</span><pre>"[Nombre], para no hacerte perder tiempo y mostrarte solo lo que hace sentido:
+1. ¿En qué rango de precio estás buscando?
+2. ¿Sería con crédito o recursos propios? ¿Ya tienes preaprobación?
+3. ¿Para cuándo te gustaría estar mudado?
+4. ¿Qué es lo más importante: zona, tamaño o precio?
+Perfecto. Con eso, te propongo ver [propiedad] el [día]."</pre></div>
+      <div class="script"><button class="copy-btn">Copiar</button><span class="tag">WhatsApp · Seguimiento sin presión</span><pre>Hola [nombre], ¿cómo vas con la decisión?
+
+Te escribo porque [novedad de valor: bajó el precio / entró una propiedad similar / hay otra oferta en curso]. 
+
+Si sigues en la búsqueda, te la aparto para verla esta semana. Si cambió tu plan, dime y dejo de escribirte por un tiempo. 🙂</pre></div>
+      <div class="script"><button class="copy-btn">Copiar</button><span class="tag">Correo · Post primera visita</span><pre>Asunto: [Propiedad] — resumen y siguientes pasos
+
+[Nombre], gracias por tu visita de hoy.
+
+Te dejo: ficha completa, fotos y los datos que me pediste ([mantenimiento/reglamento/orientación]).
+
+Como te comenté, hay [nivel de actividad real] en esta propiedad. Si te interesa avanzar, el siguiente paso es [oferta por escrito / segunda visita]. ¿Lo agendamos?
+
+[Firma]</pre></div>
+    </div>
+    <div class="mt-2 rv"><p class="caption">La regla del seguimiento: cada mensaje aporta algo nuevo (dato, opción, cambio). "¿Ya lo pensaste?" no es seguimiento, es presión. Errores de atención que más cuestan: tardar horas, responder sin preguntar, no proponer horarios concretos, no registrar la conversación y prometer llamadas que no llegan.</p></div>
+
+    <div class="module-footer rv">
+      <div class="recap"><span class="tag">Acción práctica</span><p>Mide tu tiempo real de primera respuesta de los últimos 10 leads. Si el promedio pasa de 15 minutos, define tu protocolo: notificaciones activas y plantillas listas.</p></div>
+      <button class="btn btn--ghost mark-done" data-done="m6">Marcar módulo completado</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 07 · FUNNEL ============ -->
+<section class="chapter-hero" id="m7" data-bg="3" data-mod="m7">
+  <div class="wrap">
+    <div class="kicker rv"><span class="num">07</span><span class="tag on-dark" style="color:var(--gray)">Métricas</span></div>
+    <h2 class="h1 on-dark rv d1">Tu funnel: lo que no se mide, no se mejora.</h2>
+    <p class="sub rv d2">El funnel convierte tu operación en números que puedes leer y corregir. Ocho etapas: lead, contacto, calificación, visita, oferta, negociación, apartado, cierre. En cada transición hay una tasa — y en cada tasa, una oportunidad.</p>
+    <div class="accent-line rv d3"></div>
+  </div>
+</section>
+
+<section class="panel" data-mod="m7">
+  <div class="wrap">
+    <div class="section-head rv">
+      <span class="tag tag--accent">Simulador de funnel</span>
+      <h3 class="h2">¿Qué pasa con 100 leads?</h3>
+      <p>Mueve las tasas de conversión y mira cómo cambia tu resultado final. La etapa en rojo es tu mayor fuga: ahí está tu siguiente mejora.</p>
+    </div>
+    <div class="chart-box rv d1">
+      <div class="slider-row"><label for="r1">Lead → contacto efectivo</label><input type="range" id="r1" min="30" max="90" value="60"><output id="o1">60%</output></div>
+      <div class="slider-row"><label for="r2">Contacto → visita</label><input type="range" id="r2" min="10" max="70" value="35"><output id="o2">35%</output></div>
+      <div class="slider-row"><label for="r3">Visita → oferta</label><input type="range" id="r3" min="10" max="60" value="25"><output id="o3">25%</output></div>
+      <div class="slider-row" style="border-bottom:0"><label for="r4">Oferta → cierre</label><input type="range" id="r4" min="20" max="90" value="55"><output id="o4">55%</output></div>
+
+      <div class="funnel mt-3" id="funnel-sim">
+        <div class="frow"><span class="fl">Leads</span><div class="fb"><i id="fb0" style="width:100%"></i></div><span class="fv" id="fv0">100</span></div>
+        <div class="frow" id="fr1"><span class="fl">Contactos</span><div class="fb"><i id="fb1"></i></div><span class="fv" id="fv1">60</span></div>
+        <div class="frow" id="fr2"><span class="fl">Visitas</span><div class="fb"><i id="fb2"></i></div><span class="fv" id="fv2">21</span></div>
+        <div class="frow" id="fr3"><span class="fl">Ofertas</span><div class="fb"><i id="fb3"></i></div><span class="fv" id="fv3">5</span></div>
+        <div class="frow win"><span class="fl">Cierres</span><div class="fb"><i id="fb4"></i></div><span class="fv" id="fv4">3</span></div>
+      </div>
+      <p class="mt-2" id="funnel-diag" style="font-size:14px;border-left:3px solid var(--feedback-error);padding-left:14px"></p>
+    </div>
+
+    <div class="section-head mt-4 rv">
+      <span class="tag tag--accent">Diagnóstico por etapa</span>
+      <h3 class="h2">¿Dónde estás perdiendo oportunidades?</h3>
+    </div>
+    <div class="grid g2 rv d1">
+      <div class="card"><span class="tag" style="color:var(--feedback-error)">Fuga: pocos contactos</span><h4 class="mt-1">Leads que no responden</h4><p>Causa típica: respuesta lenta o genérica. Corrección: protocolo &lt;15 min, plantillas con pregunta incluida, intentar por dos canales (WhatsApp + llamada).</p></div>
+      <div class="card"><span class="tag" style="color:var(--feedback-error)">Fuga: pocas visitas</span><h4 class="mt-1">Conversan pero no van</h4><p>Causa típica: publicación que sobrevende o mala calificación. Corrección: fotos honestas, calificar antes de invitar y proponer siempre dos horarios concretos.</p></div>
+      <div class="card"><span class="tag" style="color:var(--feedback-error)">Fuga: pocas ofertas</span><h4 class="mt-1">Visitan y desaparecen</h4><p>Causa típica: precio alto vs alternativas, propiedad mal preparada o visita sin cierre. Corrección: revisar precio con ACM, preparar la casa, pedir feedback y siguiente paso en la visita.</p></div>
+      <div class="card"><span class="tag" style="color:var(--feedback-error)">Fuga: cierres caídos</span><h4 class="mt-1">Ofertas que no firman</h4><p>Causa típica: documentos incompletos, crédito no preaprobado o negociación mal manejada. Corrección: expediente listo desde captación, validar financiamiento antes de la oferta, módulo 08.</p></div>
+    </div>
+
+    <div class="section-head mt-4 rv">
+      <span class="tag tag--accent">Scorecard semanal</span>
+      <h3 class="h2">Tu rutina de 30 minutos.</h3>
+    </div>
+    <div class="rv d1">
+      <ul class="check" data-check="cl-score">
+        <li><span class="box">✓</span>Leads nuevos de la semana y su origen</li>
+        <li><span class="box">✓</span>Tiempo promedio de primera respuesta</li>
+        <li><span class="box">✓</span>Tasa de conversión de cada etapa vs semana anterior</li>
+        <li><span class="box">✓</span>Visitas realizadas y feedback registrado</li>
+        <li><span class="box">✓</span>Ofertas activas y su siguiente paso con fecha</li>
+        <li><span class="box">✓</span>Propiedades con +45 días sin ofertas → plan de acción (precio, fotos, difusión)</li>
+      </ul>
+      <div class="check-meta"><div class="bar"><i data-checkbar="cl-score"></i></div><span class="caption" data-checkpct="cl-score">0 de 6</span></div>
+    </div>
+
+    <div class="module-footer rv">
+      <div class="recap"><span class="tag">Acción práctica</span><p>Reconstruye tu funnel del último trimestre con datos reales. Identifica tu peor tasa y aplica una sola corrección durante 30 días. Medir → corregir → repetir.</p></div>
+      <button class="btn btn--ghost mark-done" data-done="m7">Marcar módulo completado</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 08 · NEGOCIACIÓN ============ -->
+<section class="chapter-hero" id="m8" data-bg="6" data-mod="m8">
+  <div class="wrap">
+    <div class="kicker rv"><span class="num">08</span><span class="tag on-dark" style="color:var(--gray)">Cierre</span></div>
+    <h2 class="h1 on-dark rv d1">Negociación: donde se gana o se pierde todo.</h2>
+    <p class="sub rv d2">Una negociación no se improvisa: se prepara. Tu ventaja no es hablar bonito — es conocer los números, las motivaciones de cada parte y tener un plan para cada escenario antes de sentarte a la mesa.</p>
+    <div class="accent-line rv d3"></div>
+  </div>
+</section>
+
+<section class="panel" data-mod="m8">
+  <div class="wrap">
+    <div class="section-head rv">
+      <span class="tag tag--accent">Preparación</span>
+      <h3 class="h2">Antes de la mesa: conoce a las dos partes.</h3>
+    </div>
+    <div class="two-col rv d1">
+      <div>
+        <h4 class="h3 mb-2">Qué mueve al vendedor</h4>
+        <table>
+          <tbody>
+            <tr><td>Precio neto que recibe</td><td class="muted">¿Cuánto le queda después de impuestos y comisión?</td></tr>
+            <tr><td>Tiempo</td><td class="muted">¿Le urge o puede esperar? La urgencia define flexibilidad.</td></tr>
+            <tr><td>Certeza</td><td class="muted">Un comprador con crédito preaprobado vale más que uno que ofrece más sin financiamiento.</td></tr>
+            <tr><td>Emoción</td><td class="muted">Vendió recuerdos, no solo m². Trátalo con respeto.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <h4 class="h3 mb-2">Qué mueve al comprador</h4>
+        <table>
+          <tbody>
+            <tr><td>No pagar de más</td><td class="muted">Necesita sentir que hizo un buen trato. Dale datos que lo respalden.</td></tr>
+            <tr><td>Miedo a perderla</td><td class="muted">La escasez real (otras visitas, otra oferta) acelera decisiones. Nunca la inventes.</td></tr>
+            <tr><td>Presupuesto techo</td><td class="muted">Descúbrelo antes de negociar: crédito, enganche, capacidad real.</td></tr>
+            <tr><td>Condiciones</td><td class="muted">Fecha de entrega, muebles, reparaciones: moneda de cambio que no es precio.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="section-head mt-4 rv">
+      <span class="tag tag--accent">Presentar ofertas</span>
+      <h3 class="h2">Toda oferta se presenta. Ninguna se filtra.</h3>
+      <p>Tu obligación es presentar cada oferta por escrito al propietario, con contexto: comparables, actividad real de la propiedad y perfil del comprador. Presentar una oferta baja con datos abre negociaciones; ocultarla mata oportunidades.</p>
+    </div>
+    <div class="route rv d1" style="border-top:1px solid var(--light-gray)">
+      <li style="display:grid"><span class="rn">01</span><div><h4>Formaliza</h4><p>Oferta por escrito: precio, forma de pago, plazo, condiciones y vigencia. Lo verbal no se negocia.</p></div></li>
+      <li style="display:grid"><span class="rn">02</span><div><h4>Contextualiza</h4><p>"La oferta es $3.95M, 5.7% debajo de lista. El comprador tiene crédito preaprobado y puede firmar en 30 días. Los últimos 3 cierres de la zona fueron 4–6% debajo de lista."</p></div></li>
+      <li style="display:grid"><span class="rn">03</span><div><h4>Contraoferta con ancla</h4><p>Recomienda un número, no un "tú dime": "Sugiero contraofertar $4.08M manteniendo la fecha de entrega que él pide."</p></div></li>
+      <li style="display:grid"><span class="rn">04</span><div><h4>Cierra en tercios</h4><p>Si el gap final es chico, propón partir la diferencia y amarra con apartado firmado el mismo día.</p></div></li>
+    </div>
+
+    <div class="section-head mt-4 rv">
+      <span class="tag tag--accent">Roleplay</span>
+      <h3 class="h2">Escenarios de mesa: entrena antes de vivirlos.</h3>
+    </div>
+    <div class="acc rv d1">
+      <details><summary>Escenario 1 · El comprador ofrece 15% abajo</summary><div class="acc-body">No te ofendas ni dejes que el vendedor se ofenda. Responde con datos: "Gracias por la oferta. Para que la evalúes con contexto: los cierres reales de la zona están 4–6% debajo de lista, no 15%. Si tu interés es serio, acércate a ese rango y el propietario tendrá disposición de negociar condiciones." Una oferta baja es interés — trabájala.</div></details>
+      <details><summary>Escenario 2 · El vendedor rechaza una buena oferta</summary><div class="acc-body">"Entiendo que esperabas más. Déjame mostrarte el costo de esperar: cada mes sin vender son [mantenimiento + predial + oportunidad]. Esta oferta está 4% debajo de lista con firma en 30 días. La siguiente puede tardar 3 meses y no ser mejor. ¿Qué número sí firmarías hoy? Déjame pelearlo."</div></details>
+      <details><summary>Escenario 3 · "Baja tu comisión y cerramos"</summary><div class="acc-body">"Mi comisión es lo que hace posible este resultado: fotografía, difusión, filtrado y esta negociación. Lo que sí puedo hacer es buscar los $[X] que faltan en la contraoferta o en las condiciones. Trabajemos el precio, no mi trabajo." Si cedes comisión a la primera, enseñas que todo lo tuyo es negociable.</div></details>
+      <details><summary>Escenario 4 · Dos ofertas al mismo tiempo</summary><div class="acc-body">Transparencia con reglas: informa a ambos compradores que existe otra oferta (sin revelar montos) y da una fecha límite para mejores y últimas propuestas. Presenta ambas al propietario con análisis de precio, certeza y plazo. La más alta no siempre es la mejor.</div></details>
+    </div>
+
+    <div class="section-head mt-4 rv">
+      <span class="tag tag--accent">Lenguaje de mesa</span>
+      <h3 class="h2">Frases que suman, frases que restan.</h3>
+    </div>
+    <div class="vs rv d1">
+      <div class="col bad">
+        <span class="vs-label">Evita decir</span>
+        <ul>
+          <li>"El precio es negociable" (regalas margen antes de empezar)</li>
+          <li>"El dueño tiene mucha urgencia" (traicionas a tu cliente)</li>
+          <li>"Yo que tú aceptaba" (presión sin datos)</li>
+          <li>"Hay muchísima gente interesada" (si no es verdad, se nota)</li>
+          <li>"Es mi última palabra" (si luego cedes, pierdes toda credibilidad)</li>
+        </ul>
+      </div>
+      <div class="col good">
+        <span class="vs-label">Di mejor</span>
+        <ul>
+          <li>"El propietario evalúa ofertas serias por escrito"</li>
+          <li>"El plazo de entrega puede ser un punto de flexibilidad"</li>
+          <li>"Los datos de la zona muestran cierres entre X y Y"</li>
+          <li>"Esta semana hay [n] visitas agendadas" (solo si es real)</li>
+          <li>"Si llegamos a [número], recomiendo firmar hoy mismo"</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="module-footer rv">
+      <div class="recap"><span class="tag">Acción práctica</span><p>Roleplay de 20 minutos con un colega: uno es comprador agresivo, otro defiende precio con el ACM del módulo 04. Cambien roles. Repítelo cada semana.</p></div>
+      <button class="btn btn--ghost mark-done" data-done="m8">Marcar módulo completado</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 09 · LEGAL ============ -->
+<section class="chapter-hero" id="m9" data-bg="7" data-mod="m9">
+  <div class="wrap">
+    <div class="kicker rv"><span class="num">09</span><span class="tag on-dark" style="color:var(--gray)">Seguridad</span></div>
+    <h2 class="h1 on-dark rv d1">Legal: las operaciones se cierran en papel.</h2>
+    <p class="sub rv d2">El asesor que domina el expediente legal cierra más rápido y duerme tranquilo. No necesitas ser abogado — necesitas saber qué pedir, qué revisar y cuándo levantar la mano.</p>
+    <div class="accent-line rv d3"></div>
+  </div>
+</section>
+
+<section class="panel" data-mod="m9">
+  <div class="wrap">
+    <div class="note rv"><b>Sección educativa.</b> Este módulo orienta la práctica comercial en México y no sustituye asesoría legal profesional. Cada operación debe validarse con notario y, cuando aplique, con el equipo legal de Pulppo o un abogado especializado.<span class="validate">Validar con especialista</span></div>
+
+    <div class="section-head mt-4 rv">
+      <span class="tag tag--accent">El expediente</span>
+      <h3 class="h2">Documentos indispensables antes de publicar.</h3>
+    </div>
+    <div class="rv d1">
+      <ul class="check" data-check="cl-legal">
+        <li><span class="box">✓</span>Escritura pública inscrita en el Registro Público de la Propiedad</li>
+        <li><span class="box">✓</span>Identificación oficial vigente de todos los propietarios</li>
+        <li><span class="box">✓</span>Boletas de predial pagadas (último ejercicio, idealmente 5 años)</li>
+        <li><span class="box">✓</span>Boletas de agua al corriente</li>
+        <li><span class="box">✓</span>Certificado de libertad de gravamen (CLG) reciente</li>
+        <li><span class="box">✓</span>Acta de matrimonio: si hay sociedad conyugal, firman ambos cónyuges</li>
+        <li><span class="box">✓</span>Poder notarial vigente y suficiente, si firma un apoderado</li>
+        <li><span class="box">✓</span>Constancia de situación fiscal (RFC) y CURP de los propietarios</li>
+        <li><span class="box">✓</span>Si es condominio: régimen, reglamento y no adeudo de cuotas</li>
+      </ul>
+      <div class="check-meta"><div class="bar"><i data-checkbar="cl-legal"></i></div><span class="caption" data-checkpct="cl-legal">0 de 9</span></div>
+    </div>
+
+    <div class="section-head mt-4 rv">
+      <span class="tag tag--accent">Ruta legal</span>
+      <h3 class="h2">De la captación a la escritura: la línea de tiempo.</h3>
+    </div>
+    <ol class="route rv d1">
+      <li><span class="rn">01</span><div><h4>Contrato de intermediación</h4><p>Tu primera protección: define exclusiva, vigencia, comisión y obligaciones de las partes. Sin él, tu comisión depende de la buena voluntad.</p></div></li>
+      <li><span class="rn">02</span><div><h4>Revisión documental</h4><p>Expediente completo y CLG limpio antes de publicar. Detectar un gravamen en la semana 1 es un trámite; detectarlo en el cierre es una operación caída.</p></div></li>
+      <li><span class="rn">03</span><div><h4>Oferta y apartado</h4><p>El apartado retira la propiedad del mercado con una cantidad (habitualmente en un rango cercano al 1–5% del precio, según acuerdo) y fija condiciones y penalidades. Siempre por escrito, con vigencia definida.</p></div></li>
+      <li><span class="rn">04</span><div><h4>Promesa de compraventa</h4><p>Contrato que obliga a firmar la compraventa definitiva en una fecha, con precio, forma de pago y penalidades. Se usa cuando hay crédito en trámite o condiciones por cumplir.</p></div></li>
+      <li><span class="rn">05</span><div><h4>Notaría</h4><p>El notario da fe, valida documentos, calcula impuestos y elabora la escritura. Los avalúos y estudios los coordina la notaría o el banco. El asesor da seguimiento y mantiene informadas a las partes.</p></div></li>
+      <li><span class="rn">06</span><div><h4>Firma y entrega</h4><p>Firma de escritura, pago del precio, entrega de posesión y llaves. Documenta la entrega: acta con lecturas de servicios y estado del inmueble.</p></div></li>
+    </ol>
+
+    <div class="section-head mt-4 rv">
+      <span class="tag tag--accent">Actores</span>
+      <h3 class="h2">Quién hace qué.</h3>
+    </div>
+    <div class="grid g3 rv d1">
+      <div class="card"><h4>Asesor</h4><p>Coordina el proceso, integra el expediente, comunica avances y detecta focos rojos a tiempo.</p></div>
+      <div class="card"><h4>Notario</h4><p>Da fe pública, revisa la legalidad, retiene y entera impuestos, inscribe la escritura.</p></div>
+      <div class="card"><h4>Banco / Infonavit</h4><p>Aprueba el crédito, ordena el avalúo y define tiempos de la operación con financiamiento.</p></div>
+      <div class="card"><h4>Vendedor</h4><p>Entrega documentos, sanea adeudos y garantiza la posesión libre del inmueble.</p></div>
+      <div class="card"><h4>Comprador</h4><p>Acredita recursos o crédito, revisa la propiedad y cumple el calendario de pagos.</p></div>
+      <div class="card"><h4>Abogado / Legal Pulppo</h4><p>Interviene en casos complejos: sucesiones, poderes, litigios, extranjeros, fideicomisos.</p></div>
+    </div>
+
+    <div class="section-head mt-4 rv">
+      <span class="tag tag--accent">Focos rojos</span>
+      <h3 class="h2">Cuándo detener la operación y llamar al especialista.</h3>
+    </div>
+    <div class="alerts rv d1">
+      <div class="al"><b>Sucesión sin terminar</b>"La casa era de mi papá" no es título de propiedad. Sin adjudicación inscrita, no hay venta posible.</div>
+      <div class="al"><b>Gravámenes o embargos</b>Hipoteca no cancelada, embargo o litigio en el CLG: se resuelve antes de prometer, no en la notaría.</div>
+      <div class="al"><b>Firmas incompletas</b>Sociedad conyugal o copropiedad: si no firman todos, la operación es impugnable.</div>
+      <div class="al"><b>Poder dudoso</b>Poder viejo, de otro estado o "general" sin facultades de dominio: validar con notario siempre.</div>
+      <div class="al"><b>Prisa por efectivo</b>Presión por cerrar en efectivo, sin notario o "con un contrato privado basta": riesgo alto, inclúyendo temas de lavado de dinero.</div>
+      <div class="al"><b>Papeles que no cuadran</b>Nombres, superficies o direcciones distintas entre escritura, predial e identificaciones: aclarar antes de avanzar.</div>
+    </div>
+
+    <div class="module-footer rv">
+      <div class="recap"><span class="tag">Acción práctica</span><p>Audita el expediente de tus captaciones activas con el checklist. Toda propiedad publicada sin CLG reciente es un pendiente urgente de esta semana.</p></div>
+      <button class="btn btn--ghost mark-done" data-done="m9">Marcar módulo completado</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 10 · SAT Y FINANZAS ============ -->
+<section class="chapter-hero" id="m10" data-bg="8" data-mod="m10">
+  <div class="wrap">
+    <div class="kicker rv"><span class="num">10</span><span class="tag on-dark" style="color:var(--gray)">Números</span></div>
+    <h2 class="h1 on-dark rv d1">SAT, impuestos y finanzas: claridad que cierra ventas.</h2>
+    <p class="sub rv d2">Las operaciones se caen por sorpresas de dinero. El asesor que explica costos e impuestos desde el inicio genera confianza — y llega a la notaría sin sustos.</p>
+    <div class="accent-line rv d3"></div>
+  </div>
+</section>
+
+<section class="panel" data-mod="m10">
+  <div class="wrap">
+    <div class="note rv"><b>Sección educativa.</b> Tasas, topes y requisitos fiscales cambian y varían por entidad y por caso. Toda cifra de esta sección es orientativa: valídala con el notario, un contador o directamente con el SAT antes de comunicarla como definitiva.<span class="validate">Validar con SAT / notario</span></div>
+
+    <div class="section-head mt-4 rv">
+      <span class="tag tag--accent">Para el vendedor</span>
+      <h3 class="h2">ISR por enajenación: el impuesto que hay que anticipar.</h3>
+    </div>
+    <div class="grid g2 rv d1">
+      <div class="card"><h4>Cómo funciona</h4><p>Al vender, el ISR se calcula sobre la ganancia: precio de venta menos costo de adquisición actualizado y deducciones permitidas (mejoras comprobadas, gastos notariales de compra, comisiones). El notario lo calcula, retiene y entera. Por eso la escritura anterior y las facturas de remodelación valen dinero.</p></div>
+      <div class="card"><h4>Exención por casa habitación</h4><p>La venta de la casa habitación del contribuyente puede estar exenta hasta un tope establecido en UDIS (con requisitos: acreditar que es su vivienda, y no haber usado la exención en los últimos años). Es la pregunta más importante para tu vendedor: puede significar cientos de miles de pesos. Confirmar caso por caso con el notario.</p></div>
+    </div>
+
+    <div class="section-head mt-4 rv">
+      <span class="tag tag--accent">Para el comprador</span>
+      <h3 class="h2">El precio no es el costo total.</h3>
+      <p>Regla práctica para presupuestar: los gastos de escrituración suelen ubicarse en un rango aproximado de 4% a 8% del valor de la operación, según la entidad y el crédito. Desglose típico:</p>
+    </div>
+    <div class="chart-box rv d1">
+      <div class="funnel">
+        <div class="frow"><span class="fl">ISAI / traslado de dominio</span><div class="fb"><i style="width:70%"></i></div><span class="fv">≈2–5%<small>del valor, según estado</small></span></div>
+        <div class="frow"><span class="fl">Honorarios notariales</span><div class="fb"><i style="width:30%"></i></div><span class="fv">≈0.5–1.5%<small>arancel por entidad</small></span></div>
+        <div class="frow"><span class="fl">Derechos de inscripción RPP</span><div class="fb"><i style="width:18%"></i></div><span class="fv">variable<small>por estado</small></span></div>
+        <div class="frow"><span class="fl">Avalúo</span><div class="fb"><i style="width:10%"></i></div><span class="fv">fijo<small>según valor y perito</small></span></div>
+        <div class="frow"><span class="fl">Gastos de crédito</span><div class="fb"><i style="width:14%"></i></div><span class="fv">si aplica<small>apertura, estudio</small></span></div>
+      </div>
+      <p class="caption mt-2">Porcentajes ilustrativos: cada notaría entrega un presupuesto exacto antes de firmar. Pídelo siempre por escrito y compártelo con tu comprador.</p>
+    </div>
+
+    <div class="section-head mt-4 rv">
+      <span class="tag tag--accent">Tus obligaciones</span>
+      <h3 class="h2">El asesor también tiene tarea fiscal.</h3>
+    </div>
+    <div class="grid g3 rv d1">
+      <div class="card"><h4>Factura tu comisión</h4><p>Estar dado de alta en el SAT en el régimen adecuado y emitir CFDI por tus honorarios. Sin factura no hay profesionalización — ni deducción para tu cliente.</p></div>
+      <div class="card"><h4>Declara y deduce</h4><p>Declaraciones en tiempo y deducción de gastos reales de tu actividad: publicidad, gasolina, telefonía, fotografía. Un contador se paga solo.</p></div>
+      <div class="card"><h4>Conoce la LFPIORPI</h4><p>La actividad inmobiliaria es actividad vulnerable: hay obligaciones de identificación de clientes y avisos en operaciones que superan ciertos umbrales. Tu inmobiliaria y el área legal te guían en el proceso.</p></div>
+    </div>
+
+    <div class="section-head mt-4 rv">
+      <span class="tag tag--accent">Guion</span>
+      <h3 class="h2">Cómo explicar los costos sin espantar.</h3>
+    </div>
+    <div class="script rv d1"><button class="copy-btn">Copiar</button><span class="tag">Guion · Costos de la operación</span><pre>Para el comprador:
+"Además del precio, presupuesta entre 4% y 8% para escrituración: impuesto de adquisición, notario, registro y avalúo. La notaría nos da el número exacto antes de firmar — sin sorpresas."
+
+Para el vendedor:
+"De tu precio de venta hay que considerar el ISR sobre la ganancia y mi comisión. La buena noticia: si es tu casa habitación podrías tener exención, y tus facturas de remodelación reducen el impuesto. Lo validamos con el notario esta semana para que sepas tu neto exacto antes de aceptar cualquier oferta."</pre></div>
+
+    <div class="section-head mt-4 rv">
+      <span class="tag tag--accent">FAQ</span>
+      <h3 class="h2">Preguntas que te van a hacer.</h3>
+    </div>
+    <div class="acc rv d1">
+      <details><summary>"¿Quién paga los gastos de escrituración?"</summary><div class="acc-body">Por costumbre, el comprador paga los gastos de escrituración y el vendedor su ISR y la comisión. Todo es pactable por escrito — lo importante es dejarlo claro desde la oferta.</div></details>
+      <details><summary>"¿Puedo escriturar en menos para pagar menos impuestos?"</summary><div class="acc-body">No. Escriturar por debajo del precio real es evasión fiscal: riesgo para las dos partes, problemas al revender (ganancia artificial futura) y posible nulidad. La respuesta profesional es siempre no.</div></details>
+      <details><summary>"¿La comisión genera IVA?"</summary><div class="acc-body">Los honorarios por intermediación generalmente causan IVA, que se agrega a la comisión pactada. Acláralo en el contrato de intermediación: "comisión de X% más IVA".</div></details>
+      <details><summary>"¿Qué pasa si el avalúo sale distinto al precio?"</summary><div class="acc-body">Los impuestos se calculan sobre el valor más alto entre precio y avalúo (según la regla local). Si el avalúo bancario sale bajo, puede afectar el monto del crédito: anticípalo con precios realistas desde el módulo 04.</div></details>
+    </div>
+
+    <div class="module-footer rv">
+      <div class="recap"><span class="tag">Acción práctica</span><p>Pide a tu notaría de confianza una tabla actualizada de gastos de escrituración de tu estado. Tenla a la mano en cada visita: responder con precisión vende.</p></div>
+      <button class="btn btn--ghost mark-done" data-done="m10">Marcar módulo completado</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 11 · EXPERIENCIA DEL CLIENTE ============ -->
+<section class="chapter-hero" id="m11" data-bg="9" data-mod="m11">
+  <div class="wrap">
+    <div class="kicker rv"><span class="num">11</span><span class="tag on-dark" style="color:var(--gray)">Servicio</span></div>
+    <h2 class="h1 on-dark rv d1">Experiencia del cliente: tu mejor canal de captación.</h2>
+    <p class="sub rv d2">Comprar o vender una casa es de las decisiones más estresantes de la vida de una persona. El asesor que reduce fricción, comunica con claridad y cumple lo que promete no cierra una operación: abre las siguientes cinco por recomendación.</p>
+    <div class="accent-line rv d3"></div>
+  </div>
+</section>
+
+<section class="panel" data-mod="m11">
+  <div class="wrap">
+    <div class="section-head rv">
+      <span class="tag tag--accent">Principios</span>
+      <h3 class="h2">UX aplicado al servicio inmobiliario.</h3>
+    </div>
+    <div class="grid g3 rv d1">
+      <div class="card"><h4>Reduce fricción</h4><p>Cada paso que el cliente no entiende o no sabe cuándo llega es fricción. Anticipa: "esta semana pasa esto, la próxima esto otro".</p></div>
+      <div class="card"><h4>Comunica proactivamente</h4><p>El silencio se llena de ansiedad. Reporte semanal aunque no haya novedades: "sin ofertas esta semana, 14 visitas al anuncio, siguiente paso: X".</p></div>
+      <div class="card"><h4>Cumple lo pequeño</h4><p>La confianza se construye en micro-promesas: llegar a tiempo, mandar la ficha "en 10 minutos" en 10 minutos, llamar cuando dijiste.</p></div>
+    </div>
+
+    <div class="section-head mt-4 rv">
+      <span class="tag tag--accent">Journey</span>
+      <h3 class="h2">Momentos de verdad: donde se gana la recomendación.</h3>
+    </div>
+    <div class="journey rv d1">
+      <div class="jstep"><span class="jn">1</span><h5>Primer contacto</h5><p>Velocidad + calidez. Aquí decide si eres profesional.</p></div>
+      <div class="jstep"><span class="jn">2</span><h5>Antes de la visita</h5><p>Confirmación, ubicación exacta, qué va a ver y estacionamiento.</p></div>
+      <div class="jstep"><span class="jn">3</span><h5>La visita</h5><p>Puntualidad, casa preparada, escuchar más que hablar.</p></div>
+      <div class="jstep"><span class="jn">4</span><h5>Después de la visita</h5><p>Mismo día: gracias, resumen y siguiente paso claro.</p></div>
+      <div class="jstep"><span class="jn">5</span><h5>El proceso</h5><p>Negociación y trámites con estatus semanal sin que lo pidan.</p></div>
+      <div class="jstep"><span class="jn">6</span><h5>Postventa</h5><p>Entrega impecable, seguimiento a 30 días y pedir la recomendación.</p></div>
+    </div>
+
+    <div class="section-head mt-4 rv">
+      <span class="tag tag--accent">Comparador</span>
+      <h3 class="h2">Experiencia confusa vs experiencia premium.</h3>
+    </div>
+    <div class="vs rv d1">
+      <div class="col bad">
+        <span class="vs-label">Experiencia confusa</span>
+        <ul>
+          <li>"Ahí me avisas cualquier cosa" — el cliente persigue al asesor</li>
+          <li>Cambios de cita de último minuto, sin disculpa</li>
+          <li>Jerga técnica sin explicar: CLG, ISAI, promesa, apartado</li>
+          <li>Semanas de silencio durante el trámite</li>
+          <li>Entrega de llaves apresurada y adiós para siempre</li>
+        </ul>
+      </div>
+      <div class="col good">
+        <span class="vs-label">Experiencia premium</span>
+        <ul>
+          <li>Calendario del proceso compartido desde el día uno</li>
+          <li>Confirmación 24 h antes de cada cita, con mapa y detalles</li>
+          <li>Cada término explicado en una frase simple</li>
+          <li>Reporte semanal fijo, aunque el estatus sea "seguimos en banco"</li>
+          <li>Entrega con acta, regalo de bienvenida y llamada a 30 días</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="grid g2 mt-3 rv d1" style="gap:10px">
+      <div class="script"><button class="copy-btn">Copiar</button><span class="tag">Mensaje · Reporte semanal al propietario</span><pre>Hola [nombre], tu reporte semanal de [propiedad]:
+
+· Visitas al anuncio: [n] (portal) + [n] (redes)
+· Consultas atendidas: [n]
+· Visitas presenciales: [n] — feedback: [resumen honesto]
+· Siguiente paso: [acción concreta con fecha]
+
+¿Dudas o algo que quieras ajustar? Quedo pendiente.</pre></div>
+      <div class="script"><button class="copy-btn">Copiar</button><span class="tag">Mensaje · Postventa a 30 días + referido</span><pre>[Nombre], ¡ya un mes en tu nueva casa! 🏡 ¿Cómo va todo? ¿Algún pendiente con el que te pueda ayudar (servicios, administración, facturas)?
+
+Una cosa más: mi negocio crece por recomendación. Si alguien de tu confianza está pensando en comprar o vender, me encantaría cuidarlo igual que a ti. ¿Me lo presentas?</pre></div>
+    </div>
+
+    <div class="module-footer rv">
+      <div class="recap"><span class="tag">Acción práctica</span><p>Instala el reporte semanal con todos tus propietarios activos, mismo día y hora cada semana. Es el hábito con mejor retorno reputacional del negocio.</p></div>
+      <button class="btn btn--ghost mark-done" data-done="m11">Marcar módulo completado</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 12 · BIBLIOTECA ============ -->
+<section class="chapter-hero" id="m12" data-bg="10" data-mod="m12">
+  <div class="wrap">
+    <div class="kicker rv"><span class="num">12</span><span class="tag on-dark" style="color:var(--gray)">Recursos</span></div>
+    <h2 class="h1 on-dark rv d1">Playbooks y recursos: tu arsenal diario.</h2>
+    <p class="sub rv d2">Todo lo accionable de la guía, en un solo lugar. Filtra por etapa, copia y usa. Vuelve aquí cada vez que lo necesites.</p>
+    <div class="accent-line rv d3"></div>
+  </div>
+</section>
+
+<section class="panel" data-mod="m12">
+  <div class="wrap">
+    <div class="section-head rv">
+      <span class="tag tag--accent">Biblioteca</span>
+      <h3 class="h2">Filtra por etapa del proceso.</h3>
+    </div>
+    <div class="lib-filter rv d1" id="lib-filter">
+      <button class="on" data-f="all">Todo</button>
+      <button data-f="cap">Captación</button>
+      <button data-f="pub">Publicación</button>
+      <button data-f="lead">Leads</button>
+      <button data-f="neg">Negociación</button>
+      <button data-f="cierre">Cierre</button>
+    </div>
+    <div class="lib-grid rv d2" id="lib-grid">
+      <div class="res show" data-cat="cap"><span class="tag">Script · Captación</span><h4>Prospección WhatsApp</h4><p>Primer contacto con propietario que vende por su cuenta.</p><button data-copy="Hola [nombre], vi tu propiedad publicada en [portal]. Soy [tu nombre], asesor inmobiliario en [zona]. Trabajo con compradores buscando ese tipo de propiedad. ¿Te comparto un análisis de mercado gratuito para validar tu precio de salida? Te sirve aunque vendas por tu cuenta.">Copiar</button></div>
+      <div class="res show" data-cat="cap"><span class="tag">Script · Captación</span><h4>Llamada de primer contacto</h4><p>Estructura de 4 pasos: apertura, contexto, valor, cierre de cita.</p><button data-copy="1. Apertura: 'Hola [nombre], soy [tu nombre] de [inmobiliaria]. ¿Tienes 2 minutos?' 2. Contexto: 'Trabajo la zona de [colonia] y tengo compradores activos.' 3. Valor: 'Preparo un análisis comparativo sin costo.' 4. Cierre: '¿Te va mejor jueves o sábado?'">Copiar</button></div>
+      <div class="res show" data-cat="cap"><span class="tag">Checklist · Captación</span><h4>Captación de calidad</h4><p>Precio ±5% de mercado · motivación y plazo reales · documentos completos · exclusiva y acceso.</p><button data-copy="CHECKLIST CAPTACIÓN: 1) Precio dentro de ±5% del ACM 2) Propietario con motivo y plazo reales 3) Escritura, predial, agua, CLG en regla 4) Exclusiva con plan de trabajo 5) Facilidad para mostrar 6) Demanda activa en la zona">Copiar</button></div>
+      <div class="res show" data-cat="cap"><span class="tag">Plantilla · Valuación</span><h4>Análisis comparativo (ACM)</h4><p>Estructura de 5 pasos: sujeto, comparables, homologación, demanda, rango.</p><button data-copy="ACM: 1) SUJETO: tipo, m², rec, baños, cajones, edad, estado 2) COMPARABLES: 6-10 (vendidos + activos + retirados), ±20% superficie 3) HOMOLOGACIÓN: ajustar $/m² por estado, piso, vista, cajones (±3-10%) 4) DEMANDA: días en mercado, competencia activa 5) CONCLUSIÓN: rango de valor + precio de salida recomendado">Copiar</button></div>
+      <div class="res show" data-cat="cap"><span class="tag">Script · Documentos</span><h4>Solicitud de expediente</h4><p>Mensaje para pedir documentos sin fricción tras la firma de exclusiva.</p><button data-copy="[Nombre], ¡excelente decisión! Para publicar con todo en regla necesito: 1) Escritura 2) Identificación oficial de propietarios 3) Predial y agua al corriente 4) CLG o datos para tramitarlo. ¿Me los mandas por aquí en foto legible? Con eso arranco hoy.">Copiar</button></div>
+      <div class="res show" data-cat="pub"><span class="tag">Checklist · Publicación</span><h4>Antes de publicar</h4><p>Los 8 puntos que toda publicación debe cumplir para convertir.</p><button data-copy="CHECKLIST PUBLICACIÓN: 1) 12+ fotos horizontales luminosas 2) Título: tipo + tamaño + diferenciador + zona 3) Descripción 6 bloques (gancho, distribución, números, entorno, condiciones, CTA) 4) Precio y m² verificados 5) Datos duros completos 6) Video disponible 7) Multicanal: plataforma + portales + 2 redes 8) Ficha WhatsApp lista">Copiar</button></div>
+      <div class="res show" data-cat="pub"><span class="tag">Fórmula · Copy</span><h4>Títulos que convierten</h4><p>[Tipo] + [m²/recámaras] + [diferenciador] + [ubicación].</p><button data-copy="FÓRMULA TÍTULO: [Tipo] + [m² o # recámaras] + [diferenciador] + [ubicación]. Ej: 'Depto 98 m² con terraza privada en Del Valle' / 'Casa 3 recámaras remodelada a 5 min del Tec'">Copiar</button></div>
+      <div class="res show" data-cat="lead"><span class="tag">Script · Leads</span><h4>Primera respuesta (&lt;15 min)</h4><p>Confirma, pregunta y propone dos horarios en un solo mensaje.</p><button data-copy="¡Hola [nombre]! Gracias por tu interés en [propiedad]. Sí está disponible. Para recomendarte mejor: ¿la buscas para vivir o inversión, y en qué rango de presupuesto? Puedo mostrártela [día/hora] o [día/hora], ¿cuál te acomoda?">Copiar</button></div>
+      <div class="res show" data-cat="lead"><span class="tag">Script · Leads</span><h4>Calificación en 3 minutos</h4><p>Presupuesto, pago, plazo, prioridad. Directo y respetuoso.</p><button data-copy="CALIFICACIÓN: 1) ¿En qué rango de precio buscas? 2) ¿Crédito o recursos propios? ¿Preaprobado? 3) ¿Para cuándo quieres estar mudado? 4) ¿Qué pesa más: zona, tamaño o precio?">Copiar</button></div>
+      <div class="res show" data-cat="lead"><span class="tag">Script · Reactivación</span><h4>Lead frío</h4><p>Mensaje de valor que reactiva sin presionar.</p><button data-copy="Hola [nombre], ¿cómo vas con la búsqueda? Te escribo porque [bajó el precio / entró una propiedad similar]. Si sigues buscando, te la aparto para esta semana. Si cambió tu plan, dime y dejo de escribirte por un tiempo 🙂">Copiar</button></div>
+      <div class="res show" data-cat="lead"><span class="tag">Script · Postvisita</span><h4>Seguimiento mismo día</h4><p>Gracias + resumen + siguiente paso, por correo o WhatsApp.</p><button data-copy="[Nombre], gracias por tu visita de hoy. Te dejo la ficha completa y los datos que pediste. Si te interesa avanzar, el siguiente paso es [oferta por escrito / segunda visita]. ¿Lo agendamos?">Copiar</button></div>
+      <div class="res show" data-cat="neg"><span class="tag">Script · Negociación</span><h4>Presentar una oferta baja</h4><p>Contexto con datos en lugar de rechazo emocional.</p><button data-copy="'Gracias por la oferta. Contexto: los cierres reales de la zona están 4-6% debajo de lista, no 15%. Si tu interés es serio, acércate a ese rango y el propietario tendrá disposición de negociar condiciones.'">Copiar</button></div>
+      <div class="res show" data-cat="neg"><span class="tag">Script · Negociación</span><h4>Defender la comisión</h4><p>Redirige la negociación al precio, no a tu trabajo.</p><button data-copy="'Mi comisión es lo que hace posible este resultado: fotografía, difusión, filtrado y esta negociación. Lo que sí puedo hacer es buscar los $[X] que faltan en la contraoferta o en las condiciones. Trabajemos el precio, no mi trabajo.'">Copiar</button></div>
+      <div class="res show" data-cat="neg"><span class="tag">Guion · Valuación</span><h4>Opinión de valor</h4><p>Los 5 pasos para presentar el precio comercial al propietario.</p><button data-copy="OPINIÓN DE VALOR: 1) Empatía: 'Entiendo por qué la valoras en X' 2) Datos: mostrar comparables vendidos vs estancados 3) Traducción: 'El mercado hoy paga entre X y Y' 4) Consecuencia: 'Con sobreprecio ayudamos a vender la competencia' 5) Plan: 'Salir en Z, revisar a 30 días con datos'">Copiar</button></div>
+      <div class="res show" data-cat="cierre"><span class="tag">Checklist · Legal</span><h4>Expediente completo</h4><p>Los 9 documentos antes de publicar y prometer.</p><button data-copy="CHECKLIST LEGAL: 1) Escritura inscrita 2) INE de todos los propietarios 3) Predial pagado 4) Agua al corriente 5) CLG reciente 6) Acta de matrimonio (sociedad conyugal firma doble) 7) Poder notarial vigente si aplica 8) RFC y CURP 9) Condominio: régimen + no adeudo">Copiar</button></div>
+      <div class="res show" data-cat="cierre"><span class="tag">Checklist · Fiscal</span><h4>Costos de la operación</h4><p>Qué presupuestar comprador y vendedor. Validar con notario.</p><button data-copy="CHECKLIST FISCAL — Comprador: ISAI, notario, RPP, avalúo, gastos de crédito (≈4-8% total, validar con notaría). Vendedor: ISR sobre ganancia (revisar exención casa habitación y deducciones: escritura de compra, facturas de mejoras), comisión + IVA. Nunca escriturar por debajo del precio real.">Copiar</button></div>
+      <div class="res show" data-cat="cierre"><span class="tag">Checklist · Cierre</span><h4>Ruta al cierre</h4><p>De la oferta aceptada a la entrega de llaves sin sorpresas.</p><button data-copy="RUTA DE CIERRE: 1) Oferta por escrito aceptada 2) Apartado firmado con vigencia 3) Expediente a notaría 4) Crédito/avalúo en curso — seguimiento semanal 5) Promesa si hay condiciones 6) Presupuesto de gastos por escrito a ambas partes 7) Firma de escritura 8) Acta de entrega con lecturas de servicios">Copiar</button></div>
+      <div class="res show" data-cat="cierre"><span class="tag">Plantilla · Reporte</span><h4>Reporte semanal al propietario</h4><p>El hábito que sostiene exclusivas y genera referidos.</p><button data-copy="REPORTE SEMANAL [propiedad]: · Visitas al anuncio: [n] · Consultas atendidas: [n] · Visitas presenciales: [n] + feedback honesto · Siguiente paso con fecha: [acción]. ¿Dudas o ajustes? Quedo pendiente.">Copiar</button></div>
+      <div class="res show" data-cat="lead"><span class="tag">Glosario</span><h4>Términos que debes dominar</h4><p>ACM, absorción, CLG, ISAI, apartado, promesa, homologación y más.</p><button data-copy="GLOSARIO: ACM=análisis comparativo de mercado · Absorción=velocidad a la que el mercado compra inventario · CLG=certificado de libertad de gravamen · ISAI=impuesto sobre adquisición de inmuebles · Apartado=acuerdo que retira la propiedad del mercado con una cantidad · Promesa=contrato que obliga a firmar la compraventa en fecha futura · Homologar=ajustar precios de comparables por sus diferencias · Sobreprecio=diferencia entre precio de salida y valor comercial">Copiar</button></div>
+    </div>
+    <div class="module-footer rv">
+      <div class="recap"><span class="tag">Acción práctica</span><p>Guarda tus 5 recursos más usados como respuestas rápidas en WhatsApp Business. La velocidad también se diseña.</p></div>
+      <button class="btn btn--ghost mark-done" data-done="m12">Marcar módulo completado</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CIERRE ============ -->
+<section id="cierre" data-bg="10" data-mod="m12">
+  <div class="wrap">
+    <div class="rv"><span class="tag" style="color:var(--gray)">Cierre</span></div>
+    <h2 class="h1 on-dark rv d1 mt-2">El estándar ya no es una idea.<br>Es tu forma de trabajar.</h2>
+    <p class="sub on-dark rv d2" style="max-width:560px;margin-top:22px;color:rgba(255,255,255,.85)">Doce módulos, un método. Vuelve a esta guía cada semana: revisa tu funnel, afina tus scripts, sube tu estándar. Y cuando cierres con método, compártelo — así crece la comunidad.</p>
+    <div class="mt-3 rv d3" style="display:flex;gap:12px;flex-wrap:wrap">
+      <a class="btn btn--on-dark" href="#mapa">Volver al mapa</a>
+      <a class="btn" style="background:transparent;color:#fff;border-color:#fff" href="#m7">Revisar mi funnel</a>
+    </div>
+    <p class="caption rv d4 mt-3" style="color:var(--gray)">Master Guide Pulppo · El Estándar · Contenido educativo. Temas legales, fiscales y financieros deben validarse con especialistas y fuentes oficiales.</p>
+  </div>
+</section>
+
+</div><!-- /shell -->
+</main>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------- Scroll progress ---------- */
+  var sb=document.getElementById('scrollbar');
+  function onScroll(){
+    var h=document.documentElement;
+    var p=h.scrollTop/(h.scrollHeight-h.clientHeight);
+    sb.style.width=(p*100)+'%';
+    document.getElementById('topbar').classList.toggle('solid', overLight);
+  }
+  window.addEventListener('scroll',onScroll,{passive:true});
+
+  /* ---------- Reveal on scroll ---------- */
+  var rvObs=new IntersectionObserver(function(es){
+    es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); rvObs.unobserve(e.target);} });
+  },{threshold:.12});
+  document.querySelectorAll('.rv').forEach(function(el){rvObs.observe(el);});
+
+  /* ---------- Fondos por capítulo + módulo activo ---------- */
+  var bgs=document.querySelectorAll('#bg .bg-img');
+  var railLinks=document.querySelectorAll('#rail a[data-mod]');
+  var chIndicator=document.getElementById('chapter-indicator');
+  var names={hero:'00 · Bienvenida',m1:'01 · El nuevo estándar',m2:'02 · Ecosistema Pulppo',m3:'03 · Captación',m4:'04 · Valuación y mercado',m5:'05 · Publicación',m6:'06 · Leads y atención',m7:'07 · Funnel y métricas',m8:'08 · Negociación',m9:'09 · Legal',m10:'10 · SAT y finanzas',m11:'11 · Experiencia del cliente',m12:'12 · Playbooks y recursos'};
+  var overLight=false;
+
+  var secObs=new IntersectionObserver(function(es){
+    es.forEach(function(e){
+      if(!e.isIntersecting) return;
+      var el=e.target;
+      if(el.dataset.bg!==undefined){
+        bgs.forEach(function(b){b.classList.toggle('active',b.dataset.bg===el.dataset.bg);});
+      }
+      var mod=el.dataset.mod;
+      if(mod){
+        railLinks.forEach(function(a){a.classList.toggle('active',a.dataset.mod===mod);});
+        chIndicator.textContent=names[mod]||'Master Guide';
+      }
+      overLight=el.classList.contains('panel')&&!el.classList.contains('panel--dark');
+      document.getElementById('rail').classList.toggle('over-light',overLight);
+      document.getElementById('topbar').classList.toggle('solid',overLight);
+    });
+  },{rootMargin:'-45% 0px -45% 0px'});
+  document.querySelectorAll('[data-mod]').forEach(function(s){ if(s.tagName==='SECTION') secObs.observe(s); });
+
+  /* ---------- Checklists (estado en memoria de la sesión) ---------- */
+  document.querySelectorAll('.check').forEach(function(list){
+    var key=list.dataset.check;
+    list.addEventListener('click',function(ev){
+      var li=ev.target.closest('li'); if(!li) return;
+      li.classList.toggle('on');
+      if(key){
+        var items=list.querySelectorAll('li'),on=list.querySelectorAll('li.on').length;
+        var bar=document.querySelector('[data-checkbar="'+key+'"]');
+        var pct=document.querySelector('[data-checkpct="'+key+'"]');
+        if(bar) bar.style.width=(on/items.length*100)+'%';
+        if(pct) pct.textContent=on+' de '+items.length;
+      }
+      if(list.dataset.sim) simCap();
+    });
+  });
+
+  /* ---------- Tabs ---------- */
+  document.querySelectorAll('[data-tabs]').forEach(function(tabbar){
+    var panes=document.querySelector('[data-panes="'+tabbar.dataset.tabs+'"]');
+    tabbar.addEventListener('click',function(ev){
+      var b=ev.target.closest('button'); if(!b) return;
+      tabbar.querySelectorAll('button').forEach(function(x){x.classList.toggle('on',x===b);});
+      Array.prototype.forEach.call(panes.children,function(p,i){p.classList.toggle('on',i===+b.dataset.tab);});
+    });
+  });
+
+  /* ---------- Copy buttons ---------- */
+  function bindCopy(btn,getText){
+    btn.addEventListener('click',function(){
+      var t=getText();
+      (navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(ok,function(){
+        var ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();
+        try{document.execCommand('copy');ok();}catch(e){}document.body.removeChild(ta);
+      });
+      function ok(){var o=btn.textContent;btn.textContent='Copiado ✓';btn.classList.add('ok');
+        setTimeout(function(){btn.textContent=o;btn.classList.remove('ok');},1800);}
+    });
+  }
+  document.querySelectorAll('.script .copy-btn').forEach(function(b){
+    bindCopy(b,function(){return b.parentElement.querySelector('pre').textContent;});
+  });
+  document.querySelectorAll('[data-copy]').forEach(function(b){
+    bindCopy(b,function(){return b.dataset.copy;});
+  });
+
+  /* ---------- Simulador de captación ---------- */
+  function simCap(){
+    var list=document.querySelector('[data-sim="cap"]'); if(!list) return;
+    var total=0,max=0;
+    list.querySelectorAll('li').forEach(function(li){max+=+li.dataset.pts; if(li.classList.contains('on')) total+=+li.dataset.pts;});
+    var r=document.getElementById('sim-cap-result');
+    r.className='result';
+    var t,p;
+    if(total>=10){r.classList.add('verde');t='Captación premium ('+total+'/'+max+')';p='Adelante con todo: exclusiva, plan de difusión completo y prioridad en tu agenda.';}
+    else if(total>=6){r.classList.add('amarillo');t='Captación condicionada ('+total+'/'+max+')';p='Vale la pena si corriges lo que falta antes de publicar: negocia precio, exclusiva o documentos. No inviertas a ciegas.';}
+    else{r.classList.add('rojo');t='Alto riesgo ('+total+'/'+max+')';p='Con este perfil, la propiedad consumirá meses sin resultado. Declina con elegancia o replantea condiciones desde cero.';}
+    r.innerHTML='<span class="r-title">'+t+'</span><p>'+p+'</p>';
+  }
+
+  /* ---------- Slider sobreprecio ---------- */
+  var sob=document.getElementById('sob');
+  if(sob){
+    var data={0:{d:35,v:'100%',c:'−4%',m:'Precio comercial: máxima exposición en los primeros 30 días, cuando la propiedad es novedad.',ok:1},
+      5:{d:60,v:'70%',c:'−6%',m:'Sobreprecio leve: aún hay visitas, pero el reloj corre y la negociación será más dura.',ok:1},
+      10:{d:110,v:'45%',c:'−9%',m:'La propiedad empieza a "quemarse": los compradores la ven y la descartan por comparación.',ok:0},
+      15:{d:170,v:'25%',c:'−12%',m:'Ayudas a vender la competencia. Las visitas son curiosos, no compradores.',ok:0},
+      20:{d:240,v:'12%',c:'−15%',m:'Inventario muerto: el mercado ya la etiquetó como cara. Recuperarla exigirá bajar debajo del valor inicial.',ok:0},
+      25:{d:300,v:'5%',c:'−18%',m:'Sin actividad real. El costo de salir mal supera cualquier expectativa del propietario.',ok:0}};
+    sob.addEventListener('input',function(){
+      var v=+sob.value,d=data[v];
+      document.getElementById('sob-out').textContent=v+'%';
+      document.getElementById('sob-dias').textContent=d.d;
+      document.getElementById('sob-visitas').textContent=d.v;
+      document.getElementById('sob-cierre').textContent=d.c;
+      var msg=document.getElementById('sob-msg');
+      msg.textContent=d.m;
+      msg.style.borderLeftColor=d.ok?'var(--sea-green)':'var(--feedback-error)';
+    });
+  }
+
+  /* ---------- Funnel interactivo ---------- */
+  var rs=['r1','r2','r3','r4'].map(function(id){return document.getElementById(id);});
+  if(rs[0]){
+    function calc(){
+      var v=rs.map(function(r){return +r.value;});
+      v.forEach(function(x,i){document.getElementById('o'+(i+1)).textContent=x+'%';});
+      var n=[100];
+      for(var i=0;i<4;i++) n.push(Math.round(n[i]*v[i]/100));
+      for(var j=0;j<5;j++){
+        document.getElementById('fv'+j).textContent=n[j];
+        document.getElementById('fb'+j).style.width=Math.max(n[j],1)+'%';
+      }
+      // mayor fuga = menor tasa relativa a benchmark
+      var bench=[60,35,25,55], worst=0, worstGap=1;
+      for(var k=0;k<4;k++){var gap=v[k]/bench[k]; if(gap<worstGap){worstGap=gap;worst=k;}}
+      ['fr1','fr2','fr3'].forEach(function(id){document.getElementById(id).classList.remove('leak');});
+      var labels=['Lead → contacto: mejora velocidad de respuesta y doble canal (módulo 06).',
+        'Contacto → visita: califica mejor y propone horarios concretos (módulo 06).',
+        'Visita → oferta: revisa precio con ACM y prepara la propiedad (módulos 04 y 05).',
+        'Oferta → cierre: valida crédito y expediente antes de la oferta (módulos 08 y 09).'];
+      var diag=document.getElementById('funnel-diag');
+      if(worstGap<1){
+        if(worst<3) document.getElementById('fr'+(worst+1)).classList.add('leak');
+        diag.textContent='Tu mayor fuga — '+labels[worst];
+        diag.style.borderLeftColor='var(--feedback-error)';
+      }else{
+        diag.textContent='Funnel sano: con '+n[4]+' cierres por cada 100 leads estás en o por encima del estándar. Siguiente palanca: más leads con mejor captación (módulo 03).';
+        diag.style.borderLeftColor='var(--sea-green)';
+      }
+    }
+    rs.forEach(function(r){r.addEventListener('input',calc);});
+    calc();
+  }
+
+  /* ---------- Biblioteca: filtros ---------- */
+  var lf=document.getElementById('lib-filter');
+  if(lf){
+    lf.addEventListener('click',function(ev){
+      var b=ev.target.closest('button'); if(!b) return;
+      lf.querySelectorAll('button').forEach(function(x){x.classList.toggle('on',x===b);});
+      var f=b.dataset.f;
+      document.querySelectorAll('#lib-grid .res').forEach(function(r){
+        r.classList.toggle('show', f==='all'||r.dataset.cat===f);
+      });
+    });
+  }
+
+  /* ---------- Progreso de módulos (memoria de sesión) ---------- */
+  var done={}, MODS=12;
+  document.querySelectorAll('.mark-done').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var m=btn.dataset.done;
+      done[m]=!done[m];
+      btn.classList.toggle('btn--done',done[m]);
+      btn.classList.toggle('btn--ghost',!done[m]);
+      btn.textContent=done[m]?'✓ Módulo completado':'Marcar módulo completado';
+      var link=document.querySelector('#rail a[data-mod="'+m+'"]');
+      if(link) link.classList.toggle('done',done[m]);
+      var map=document.querySelector('[data-map="'+m+'"]');
+      if(map) map.classList.toggle('done',done[m]);
+      var n=Object.keys(done).filter(function(k){return done[k];}).length;
+      document.getElementById('rail-bar').style.width=(n/MODS*100)+'%';
+      document.getElementById('rail-pct').textContent=Math.round(n/MODS*100)+'% completado';
+    });
+  });
+})();
+</script>
+</body>
+</html>
